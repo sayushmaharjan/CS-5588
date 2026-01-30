@@ -2,10 +2,10 @@
 ## Applied RAG for Product & Venture Development
 
 > **Course:** CS 5588 — Data Science Capstone / GenAI Product Leadership  
-> **Student:**  
-> **Project / Product Name:**  
+> **Student: Sayush Maharjan**  
+> **Project / Product Name: AI-Powered Weather & Climate Intelligence System**  
 > **GitHub:**  
-> **Date:**  
+> **Date: 01/29/2026**  
 
 ---
 
