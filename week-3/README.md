@@ -38,10 +38,8 @@
 <img width="1280" height="591" alt="Screenshot 2026-02-05 at 6 48 21 PM" src="https://github.com/user-attachments/assets/0d060b36-ec16-4f40-8c4e-c126f44436db" />
 
 
-### Failure Case
-- Issue: The system misinterpreted a low-resolution flood map boundary, incorrectly classifying a high-risk property as "Safe" due to poor OCR/Captioning accuracy.
-- Risk: Relying on this error, the user opted out of flood insurance, leading to significant financial loss and property damage during a flood event.
-- Mitigation: To prevent this, the system will replace binary "Safe/Risk" labels with probability intervals, add visual disclaimers regarding map precision, and provide direct links to high-resolution official sources for human verification.
+### Failure Case and Mitigation
+- We identified that the system sometimes missed critical boundary details in map images, leading to incorrect risk classifications. To address this, I would refine the image processing strategy by adjusting OCR resolution and improving metadata tagging for flood zones to make retrieval more precise. Additionally, tuning hybrid retrieval weights could ensure that the most relevant map sections are prioritized, reducing the chances of misclassifying a high-risk property as safe.
 
 
 
