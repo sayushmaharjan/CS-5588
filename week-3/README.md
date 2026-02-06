@@ -1,5 +1,5 @@
 
-- **Team / Name: Sayush MAharjan, Harsha Sri Neeriganti**  
+- **Team / Name: Sayush Maharjan, Harsha Sri Neeriganti**  
 - **Project name (working title): WeatherTwin - Personalized Climate-Aware AI Assistant**  
 
 ### 0.1 Target user persona
