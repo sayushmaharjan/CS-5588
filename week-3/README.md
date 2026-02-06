@@ -29,5 +29,18 @@
 - Evidence Traceability: 100% of risk claims must cite a specific map zone, page in a climate report, or building code.
 - Refusal Accuracy: System must refuse to predict risks for locations/buildings not covered in the documents (avoiding false safety assurances).
 
+
+### Queries 
+- Query 1: According to the FEMA Flood Safety guide, what actions should residents take during flooding to protect themselves and evacuate safely?
+- Compare the claims in the Climate Action Technical Paper about global temperature increase with the temperature trend shown in the provided climate visualization. Does the visual evidence support the paper’s claims?
+- What are the specific federal tax credit percentages for homeowners who install AI-integrated smart windows in the fiscal year 2028, according to the Natural Resources Canada and FEMA safety guides?
+
 <img width="1280" height="591" alt="Screenshot 2026-02-05 at 6 48 21 PM" src="https://github.com/user-attachments/assets/0d060b36-ec16-4f40-8c4e-c126f44436db" />
+
+
+### Links
+
+** Github Link:** https://github.com/sayushmaharjan/CS-5588/tree/main/week-3
+** Colab File:** https://colab.research.google.com/github/sayushmaharjan/CS-5588/blob/main/week-3/CS5588_Week3_HandsOn.ipynb
+
 
