@@ -29,7 +29,7 @@ This missing context leads to confusion, misjudged risk, and erosion of trust in
 
 ---
 
-## 2) User workflow (end-to-end)
+## 2) User workflow
 1. User selects a city from the dashboard.  
 2. System retrieves live weather and 24-hour forecast data.  
 3. Historical climate data is loaded and compared to current conditions.  
@@ -41,12 +41,12 @@ This missing context leads to confusion, misjudged risk, and erosion of trust in
 
 ## 3) Success metrics
 
-### Product / impact metrics (required)
+### Product / impact metrics
 - **Time-to-decision:** Reduce weather analysis time from ~5 minutes (manual lookup) to under 30 seconds.  
 - **Trust/verification signals:** Display historical comparisons and evidence sources alongside responses.  
 - **Adoption/usage signal:** Number of completed queries per session.  
 
-### Technical metrics (recommended)
+### Technical metrics
 - **Quality:** % of correct comparative responses vs historical baseline (validated on sample queries).  
 - **Latency:** < 1.5 seconds per query.  
 - **Failure rate:** < 5% API errors or empty responses.  
