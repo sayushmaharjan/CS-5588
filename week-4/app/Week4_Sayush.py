@@ -13,8 +13,8 @@ import plotly.graph_objects as go
 # =========================
 load_dotenv()
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY") #or "REMOVEDlcSNJqwWbx9es7OKfT1zWGdyb3FYS9LlnX1iSFU71Wd6RNNG6uSM"
-WEATHERAPI_KEY = os.getenv("WEATHERAPI_KEY") #or "2e5d4ea8dc9e429da37235056261202"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY") 
+WEATHERAPI_KEY = os.getenv("WEATHERAPI_KEY") 
 
 client = OpenAI(
     api_key=GROQ_API_KEY,
