@@ -6,8 +6,7 @@
 
 This missing context leads to confusion, misjudged risk, and erosion of trust in weather information. WeatherTwin closes this gap by treating weather as an interpretable decision-support problem, not just a forecast. It grounds current conditions in historical climate patterns and transparently explains why they matter, helping users move from passively viewing forecasts to making informed, confident, climate-aware decisions.
 
----
-**Web-URL:** https://unshrunken-jerilyn-concussant.ngrok-free.dev/
+
 ---
 
 ## 1) Module placement in capstone system
