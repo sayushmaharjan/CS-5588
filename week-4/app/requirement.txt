@@ -1,5 +1,9 @@
 streamlit
-openai
-python-dotenv
+pandas
 requests
-
+plotly
+transformers
+torch
+datasets
+python-dotenv
+openai
