@@ -1,0 +1,145 @@
+============================================================
+Timestamp   : 2026-02-15 20:13:42
+User Query  : weather at NYC?
+Weather Data: Current weather in New York City: Overcast. Temperature: 2.2°C (feels like -2.2°C), Humidity: 59%, Wind: 18.0 km/h
+Bot Response: The current weather in New York City is Overcast with a temperature of 2.2°C (feels like -2.2°C), humidity of 59%, and wind of 18.0 km/h
+============================================================
+
+============================================================
+Timestamp   : 2026-02-15 21:26:04
+Source      : API
+User Query  : weather at NYC?
+Weather Data: Current weather in New York City: Light snow. Temperature: 1.7°C (feels like -2.9°C), Humidity: 75%, Wind: 18.4 km/h
+Bot Response: The current weather in New York City is light snow with a temperature of 1.7°C (feels like -2.9°C), humidity of 75%, and wind of 18.4 km/h
+============================================================
+
+============================================================
+Timestamp   : 2026-02-15 22:32:38
+Source      : API
+User Query  : weather at NYC?
+Weather Data: Current weather in New York City: Patchy light snow. Temperature: 0.6°C (feels like -4.1°C), Humidity: 88%, Wind: 17.3 km/h
+Bot Response: The current weather in New York City is patchy light snow with a temperature of 0.6°C (feels like -4.1°C), humidity of 88%, and wind of 17.3 km/h
+============================================================
+
+============================================================
+Timestamp   : 2026-02-15 23:11:45
+Source      : API
+User Query  : weather at los angeles?
+Weather Data: Current weather in Los Angeles: Clear. Temperature: 15.6°C (feels like 15.6°C), Humidity: 62%, Wind: 9.4 km/h
+Bot Response: The current weather in Los Angeles is clear with a temperature of 15.6°C, humidity of 62%, and wind speed of 9.4 km/h
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 00:46:17
+Source      : API
+User Query  : weather at dubai?
+Weather Data: Current weather in Dubai: Overcast. Temperature: 24.2°C (feels like 25.7°C), Humidity: 57%, Wind: 24.8 km/h
+Bot Response: The current weather in Dubai is Overcast with a temperature of 24.2°C (feels like 25.7°C), humidity of 57%, and wind speed of 24.8 km/h
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 00:55:29
+Source      : API
+User Query  : weather at san-diego in summer?
+Weather Data: Current weather in San Diego: Partly cloudy. Temperature: 13.3°C (feels like 13.2°C), Humidity: 75%, Wind: 6.5 km/h
+Bot Response: The current weather in San Diego is partly cloudy with a temperature of 13.3°C, humidity of 75%, and wind of 6.5 km/h, which is cooler than typical summer weather
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 00:55:46
+Source      : API
+User Query  : weather at new york in summer?
+Weather Data: Current weather in New York: Patchy light snow. Temperature: -1.1°C (feels like -6.4°C), Humidity: 92%, Wind: 18.7 km/h
+Bot Response: New York's summer weather is usually warm and humid, with average high temperatures often reaching 29°C (84°F) in July and August, but the current weather is patchy light snow with a temperature of -1.1°C
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 00:55:51
+Source      : API
+User Query  : weather at new york in summer?
+Weather Data: Current weather in New York: Patchy light snow. Temperature: -1.1°C (feels like -6.4°C), Humidity: 92%, Wind: 18.7 km/h
+Bot Response: The current weather in New York is patchy light snow with a temperature of -1.1°C, however, in summer, New York typically experiences warm and humid weather with average highs around 29°C
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 00:57:09
+Source      : API
+User Query  : weather at los angeles in summer?
+Weather Data: Current weather in Los Angeles: Clear. Temperature: 12.2°C (feels like 11.1°C), Humidity: 77%, Wind: 10.8 km/h
+Bot Response: Current weather in Los Angeles: Clear, 12.2°C, 77% humidity, 10.8 km/h wind
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 01:05:32
+Source      : API
+User Query  : weather at los angeles in summer?
+Weather Data: Current weather in Los Angeles: Clear. Temperature: 14.4°C (feels like 13.7°C), Humidity: 70%, Wind: 11.9 km/h
+Bot Response: The current weather in Los Angeles is Clear with a temperature of 14.4°C, however, this is not typical summer weather in Los Angeles, which is usually warmer.
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 01:09:37
+Source      : API
+User Query  : weather at san-diego in summer?
+Weather Data: Current weather in San Diego: Partly cloudy. Temperature: 13.3°C (feels like 12.8°C), Humidity: 75%, Wind: 8.6 km/h
+Bot Response: The current weather in San Diego is partly cloudy with a temperature of 13.3°C, humidity of 75%, and wind of 8.6 km/h, which is cooler than typical summer weather
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 01:09:45
+Source      : API
+User Query  : weather at san diego in summer?
+Weather Data: Current weather in San Diego: Partly cloudy. Temperature: 13.3°C (feels like 12.8°C), Humidity: 75%, Wind: 8.6 km/h
+Bot Response: The current weather in San Diego is partly cloudy with a temperature of 13.3°C, humidity of 75%, and wind of 8.6 km/h, which is cooler than typical summer weather
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 01:09:59
+Source      : API
+User Query  : weather at los angeles in summer?
+Weather Data: Current weather in Los Angeles: Clear. Temperature: 14.4°C (feels like 13.7°C), Humidity: 70%, Wind: 11.9 km/h
+Bot Response: The current weather in Los Angeles is Clear with a temperature of 14.4°C, humidity of 70%, and wind of 11.9 km/h, which is cooler than typical summer weather
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 01:24:49
+Source      : API
+User Query  : What’s the weather in Los Angeles in July?
+Weather Data: Current weather in Los Angeles: Clear. Temperature: 14.4°C (feels like 13.7°C), Humidity: 70%, Wind: 11.9 km/h
+Bot Response: The current weather in Los Angeles is clear with a temperature of 14.4°C, humidity of 70%, and wind speed of 11.9 km/h
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 01:25:24
+Source      : API
+User Query  : Predict the weather in San Diego during winter
+Weather Data: Current weather in San Diego: Partly cloudy. Temperature: 13.3°C (feels like 12.8°C), Humidity: 75%, Wind: 8.6 km/h
+Bot Response: San Diego's winter weather is expected to be mild, with partly cloudy skies, temperatures ranging from 12-15°C, and moderate humidity, making it a pleasant winter destination
+============================================================
+
+============================================================
+Timestamp   : 2026-02-16 01:27:11
+Source      : BERT
+User Query  : Predict the weather in San Diego during winter.
+Bot Response: 
+🔮 **Weather Forecast for San Diego** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** NEGATIVE
+- **Confidence:** 57.0%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 64.9°C
+- **Temperature Range:** 56.3°C to 73.6°C
+
+- **Average Wind Speed:** 5.2 km/h
+- **Most Common Condition:** Rainy
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **NEGATIVE** 
+with 57.0% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+
+============================================================
+
