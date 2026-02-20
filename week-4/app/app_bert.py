@@ -13,6 +13,10 @@ import re
 import torch
 
 from datetime import datetime, timedelta
+from huggingface_hub import login
+
+# login(token=os.getenv("HF_TOKEN"))
+
 
 # =========================
 # LOAD ENV
@@ -93,8 +97,16 @@ def load_weather_dataset():
         df3 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-4/data/san_francisco.csv")
         df3["city"] = "San Francisco"
 
-
         df = pd.concat([df1, df2, df3], ignore_index=True)
+
+
+
+        # df = load_dataset("sayush-m/us-weather-data", token=True)
+        # ds = load_dataset("sayush-m/us-weather-data")
+
+        # df = pd.DataFrame(ds["train"])
+
+
 
         # st.write("Columns in dataset:", df.columns)
 
@@ -671,13 +683,15 @@ with col1:
             # Map conditions to icons
             def weather_to_icon(condition: str, dt: datetime) -> str:
                 condition = condition.lower()
+                # print(f"Condition: {condition}, Time: {dt}")
+
                 is_day = sunrise <= dt <= sunset
                 if "sun" in condition or "clear" in condition:
                     return "☀️" if is_day else "🌙"
                 elif "cloud" in condition or "overcast" in condition:
-                    return "☁️" if is_day else "☁️🌙"
+                    return "☁️" if is_day else "🌥️"
                 elif "rain" in condition or "drizzle" in condition:
-                    return "🌧️" if is_day else "🌧️🌙"
+                    return "🌧️" if is_day else "🌧️"
                 elif "snow" in condition or "sleet" in condition:
                     return "❄️"
                 elif "storm" in condition or "thunder" in condition:
