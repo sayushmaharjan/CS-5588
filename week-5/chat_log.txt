@@ -62,3 +62,51 @@ Weather Data: Current weather in Houston: Clear. Temperature: 9.4°C (feels like
 Bot Response: The maximum temperature in Houston in summer can reach up to 38°C
 ============================================================
 
+============================================================
+Timestamp   : 2026-02-23 22:40:50
+Source      : API
+User Query  : predict weather in league city, TX
+Weather Data: Current weather in League City, TX: Clear. Temperature: 8.2°C (feels like 8.2°C), Humidity: 66%, Wind: 3.6 km/h
+Bot Response: The current weather in League City, TX is clear with a temperature of 8.2°C (feels like 8.2°C), humidity of 66%, and wind speed of 3.6 km/h
+============================================================
+
+============================================================
+Timestamp   : 2026-02-23 22:47:48
+Source      : API
+User Query  : predict weather in REDONDO BEACH, CA US
+Weather Data: Current weather in Redondo Beach, CA, US: Clear. Temperature: 18.1°C (feels like 18.1°C), Humidity: 39%, Wind: 10.4 km/h
+Bot Response: The current weather in Redondo Beach, CA, US is clear with a temperature of 18.1°C, humidity of 39%, and wind speed of 10.4 km/h
+============================================================
+
+============================================================
+Timestamp   : 2026-02-23 22:48:49
+Source      : API
+User Query  : predict weather in LONG BEACH DAUGHERTY AIRPORT, CA US
+Weather Data: Current weather in Long Beach Daugherty Airport, CA, US: Clear. Temperature: 16.1°C (feels like 16.1°C), Humidity: 56%, Wind: 7.9 km/h
+Bot Response: The current weather in Long Beach Daugherty Airport, CA, US is clear with a temperature of 16.1°C, humidity of 56%, and wind speed of 7.9 km/h
+============================================================
+
+============================================================
+Timestamp   : 2026-02-23 22:49:08
+Source      : API
+User Query  : how will the weather be in LONG BEACH DAUGHERTY AIRPORT, CA US
+Weather Data: Current weather in Long Beach Daugherty Airport, CA, US: Clear. Temperature: 16.1°C (feels like 16.1°C), Humidity: 56%, Wind: 7.9 km/h
+Bot Response: The current weather in Long Beach Daugherty Airport, CA, US is clear with a temperature of 16.1°C, humidity of 56%, and wind speed of 7.9 km/h
+============================================================
+
+============================================================
+Timestamp   : 2026-02-23 22:49:23
+Source      : API
+User Query  : how will the weather be in california
+Weather Data: Current weather in Los Angeles: Clear. Temperature: 16.7°C (feels like 16.7°C), Humidity: 62%, Wind: 3.6 km/h
+Bot Response: The current weather in California is clear with a temperature of 16.7°C, humidity of 62%, and a wind speed of 3.6 km/h
+============================================================
+
+============================================================
+Timestamp   : 2026-02-23 22:49:29
+Source      : API
+User Query  : how will the weather be in los angeles
+Weather Data: Current weather in Los Angeles: Clear. Temperature: 16.7°C (feels like 16.7°C), Humidity: 62%, Wind: 3.6 km/h
+Bot Response: The current weather in Los Angeles is clear with a temperature of 16.7°C, humidity of 62%, and wind speed of 3.6 km/h
+============================================================
+

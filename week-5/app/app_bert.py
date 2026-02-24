@@ -641,9 +641,9 @@ with col1:
             with m8:
                 st.metric(label="🌇 Sunset", value=cur['sunset'])
         
-        # # =============================
-        # # SECTION 2: PLOTLY CHART
-        # # =============================
+        # =============================
+        # SECTION 2: PLOTLY CHART
+        # =============================
         # with st.container(border=True):
         #     st.subheader("📊 24-Hour Forecast")
             
@@ -722,6 +722,7 @@ with col1:
         #             hovermode='x unified'
         #         )
         #         st.plotly_chart(fig_hum, use_container_width=True)
+       
         # =============================
         # SECTION 2: PLOTLY ICON TIMELINE
         # =============================
