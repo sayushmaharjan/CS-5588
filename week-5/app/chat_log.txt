@@ -1,0 +1,52 @@
+============================================================
+Timestamp   : 2026-02-19 18:52:38
+Source      : BERT
+User Query  : weather at los angeles during winter?
+Bot Response: 
+🔮 **Weather Forecast for Los Angeles** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** POSITIVE
+- **Confidence:** 65.2%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 67.9°C
+- **Temperature Range:** 58.0°C to 77.6°C
+
+- **Average Wind Speed:** nan km/h
+- **Most Common Condition:** Clear
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **POSITIVE** 
+with 65.2% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+
+============================================================
+
+============================================================
+Timestamp   : 2026-02-19 18:52:51
+Source      : BERT
+User Query  : weather at los angeles during winter for hiking?
+Bot Response: 
+🔮 **Weather Forecast for Los Angeles** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** POSITIVE
+- **Confidence:** 65.2%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 67.9°C
+- **Temperature Range:** 58.0°C to 77.6°C
+
+- **Average Wind Speed:** nan km/h
+- **Most Common Condition:** Clear
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **POSITIVE** 
+with 65.2% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+
+============================================================
+

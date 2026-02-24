@@ -1,0 +1,2 @@
+timestamp,query,latency_sec,rows
+2026-02-24T03:42:39.380886+00:00,load_weather_dataset,0.9292,1827
