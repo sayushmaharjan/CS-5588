@@ -17,8 +17,13 @@ import torch
 from datetime import datetime, timedelta
 from huggingface_hub import login
 
-import streamlit as st
 import snowflake.connector
+
+import folium
+from streamlit_folium import st_folium
+from folium import plugins
+
+from app_auth import auth_ui
 
 
 
@@ -31,6 +36,40 @@ from python.snowflake_client import run_query
 
 # login(token=os.getenv("HF_TOKEN"))
 
+# =========================
+# SESSION STATE INIT
+# =========================
+if "user" not in st.session_state:
+    st.session_state["user"] = None
+if "username" not in st.session_state:
+    st.session_state["username"] = None
+if "sidebar_open" not in st.session_state:
+    st.session_state["sidebar_open"] = True
+
+# =========================
+# AUTHENTICATION CHECK
+# =========================
+if st.session_state["user"] is None:
+    auth_ui()  # this must set st.session_state["user"] and ["username"]
+    st.stop()  # stop dashboard rendering until logged in
+else:
+    st.success(f"👋 Welcome, {st.session_state['username']}")
+    
+
+# =========================
+# SIDEBAR TOGGLE & LOGOUT
+# =========================
+if st.button("☰ Toggle Sidebar"):
+    st.session_state.sidebar_open = not st.session_state.sidebar_open
+
+if st.session_state["user"] and st.session_state.sidebar_open:
+    if st.sidebar.button("Logout"):
+        st.session_state["user"] = None
+        st.session_state["username"] = None
+        st.experimental_rerun()
+
+
+
 
 # =========================
 # LOAD ENV
@@ -39,6 +78,8 @@ load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY") 
 WEATHERAPI_KEY = os.getenv("WEATHERAPI_KEY") 
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")  # Add this to .env
+
 
 client = OpenAI(
     api_key=GROQ_API_KEY,
@@ -46,7 +87,7 @@ client = OpenAI(
 )
 
 MODEL = "llama-3.3-70b-versatile"
-LOG_FILE = "chat_log.txt"
+LOG_FILE = "chat_log.csv"
 
 # =========================
 # BERT MODEL SETUP
@@ -83,7 +124,6 @@ def load_weather_model():
             # tokenizer=tokenizer,
             device=0 if torch.cuda.is_available() else -1
         )
-        
         st.success("✅ Weather BERT model loaded successfully!")
         return classifier#, tokenizer, model
     except Exception as e:
@@ -95,19 +135,56 @@ def load_weather_model():
 # =========================
 @st.cache_data
 def load_weather_dataset():
-    sql = """
-        SELECT
-            CITY,
-            OBS_DATE AS obs_date,
-            TAVG     AS temperature,
-            AWND     AS wind_speed,
-            PRCP     AS precipitation,
-            CONDITION
-        FROM WEATHER_ENRICHED
-    """
-    df, latency = run_query(sql, query_name="load_weather_dataset")
-    df.columns = [c.lower() for c in df.columns]
-    return df, latency
+    try:
+        sql = """
+            SELECT
+                CITY,
+                OBS_DATE AS obs_date,
+                TAVG     AS temperature,
+                AWND     AS wind_speed,
+                PRCP     AS precipitation,
+                CONDITION
+            FROM WEATHER_ENRICHED
+        """
+        df, latency = run_query(sql, query_name="load_weather_dataset")
+        df.columns = [c.lower() for c in df.columns]
+        df['city'] = df['city'].str.strip().str.lower()
+
+        df['clean_city'] = df['city'].apply(
+            lambda x: re.split(r'\d|,', x)[0].strip()
+        )
+
+        print(df.columns)
+        return df, latency
+    
+    except Exception as e:
+        import numpy as np
+        
+        cities = ['New York', 'London', 'Tokyo', 'Paris', 'Sydney', 'Berlin', 
+                  'Rome', 'Madrid', 'Beijing', 'Moscow', 'Dubai', 'Singapore']
+        
+        conditions = ['Sunny', 'Partly Cloudy', 'Cloudy', 'Rainy', 'Stormy', 
+                     'Snowy', 'Foggy', 'Windy']
+        
+        # Generate realistic weather data
+        n_records = 1000
+        
+        sample_data = {
+            'city': np.random.choice(cities, n_records),
+            'temperature': np.random.normal(20, 10, n_records),
+            'humidity': np.random.uniform(30, 90, n_records),
+            'wind_speed': np.random.uniform(5, 40, n_records),
+            'pressure': np.random.normal(1013, 20, n_records),
+            'condition': np.random.choice(conditions, n_records),
+            'date': pd.date_range('2023-01-01', periods=n_records, freq='6H')
+        }
+        
+        df = pd.DataFrame(sample_data)
+        st.info(f"ℹ️ Using sample dataset with {len(df)} records")
+        return df
+
+
+
 
 # def load_weather_dataset():
 #     """
@@ -176,27 +253,27 @@ def load_weather_dataset():
 #         # Fallback: Create comprehensive sample weather data
 #         import numpy as np
         
-#         cities = ['New York', 'London', 'Tokyo', 'Paris', 'Sydney', 'Berlin', 
-#                   'Rome', 'Madrid', 'Beijing', 'Moscow', 'Dubai', 'Singapore']
+        cities = ['New York', 'London', 'Tokyo', 'Paris', 'Sydney', 'Berlin', 
+                  'Rome', 'Madrid', 'Beijing', 'Moscow', 'Dubai', 'Singapore']
         
-#         conditions = ['Sunny', 'Partly Cloudy', 'Cloudy', 'Rainy', 'Stormy', 
-#                      'Snowy', 'Foggy', 'Windy']
+        conditions = ['Sunny', 'Partly Cloudy', 'Cloudy', 'Rainy', 'Stormy', 
+                     'Snowy', 'Foggy', 'Windy']
         
-#         # Generate realistic weather data
-#         n_records = 1000
+        # Generate realistic weather data
+        n_records = 1000
         
-#         sample_data = {
-#             'city': np.random.choice(cities, n_records),
-#             'temperature': np.random.normal(20, 10, n_records),  # Mean 20°C, std 10
-#             'humidity': np.random.uniform(30, 90, n_records),
-#             'wind_speed': np.random.uniform(5, 40, n_records),
-#             'pressure': np.random.normal(1013, 20, n_records),
-#             'condition': np.random.choice(conditions, n_records),
-#             'date': pd.date_range('2023-01-01', periods=n_records, freq='6H')
-#         }
+        sample_data = {
+            'city': np.random.choice(cities, n_records),
+            'temperature': np.random.normal(20, 10, n_records),  # Mean 20°C, std 10
+            'humidity': np.random.uniform(30, 90, n_records),
+            'wind_speed': np.random.uniform(5, 40, n_records),
+            'pressure': np.random.normal(1013, 20, n_records),
+            'condition': np.random.choice(conditions, n_records),
+            'date': pd.date_range('2023-01-01', periods=n_records, freq='6H')
+        }
         
-#         df = pd.DataFrame(sample_data)
-#         st.info(f"ℹ️ Using sample dataset with {len(df)} records")
+        df = pd.DataFrame(sample_data)
+        st.info(f"ℹ️ Using sample dataset with {len(df)} records")
 #         return df
 
 
@@ -227,6 +304,216 @@ def load_recent_city_weather(city: str, days: int = 30):
     """
     return run_query(sql, query_name=f"recent_weather_{city_escaped}")
 
+# =========================
+# INTERACTIVE WEATHER MAP
+# =========================
+def create_weather_map(center_lat=39.8283, center_lon=-98.5795, zoom=4):
+    """
+    Create interactive weather map with real-time layers
+    Uses OpenWeatherMap tiles for live weather visualization
+    """
+    # Create base map
+    m = folium.Map(
+        location=[center_lat, center_lon],
+        zoom_start=zoom,
+        tiles='OpenStreetMap',
+        control_scale=True
+    )
+    
+    # Add different tile layers with proper attributions
+    folium.TileLayer(
+        tiles='https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png',
+        attr='Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under ODbL.',
+        name='Terrain',
+        overlay=False,
+        control=True
+    ).add_to(m)
+    
+    folium.TileLayer(
+        tiles='CartoDB positron',
+        attr='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        name='Light Mode',
+        overlay=False,
+        control=True
+    ).add_to(m)
+    
+    folium.TileLayer(
+        tiles='CartoDB dark_matter',
+        attr='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        name='Dark Mode',
+        overlay=False,
+        control=True
+    ).add_to(m)
+    
+    # Add OpenWeatherMap layers (requires API key)
+    if OPENWEATHER_API_KEY:
+        # Temperature layer
+        folium.TileLayer(
+            tiles=f'https://tile.openweathermap.org/map/temp_new/{{z}}/{{x}}/{{y}}.png?appid={OPENWEATHER_API_KEY}',
+            attr='&copy; <a href="https://openweathermap.org/">OpenWeatherMap</a>',
+            name='🌡️ Temperature',
+            overlay=True,
+            control=True,
+            opacity=0.6
+        ).add_to(m)
+        
+        # Precipitation layer
+        folium.TileLayer(
+            tiles=f'https://tile.openweathermap.org/map/precipitation_new/{{z}}/{{x}}/{{y}}.png?appid={OPENWEATHER_API_KEY}',
+            attr='&copy; <a href="https://openweathermap.org/">OpenWeatherMap</a>',
+            name='🌧️ Precipitation',
+            overlay=True,
+            control=True,
+            opacity=0.6
+        ).add_to(m)
+        
+        # Clouds layer
+        folium.TileLayer(
+            tiles=f'https://tile.openweathermap.org/map/clouds_new/{{z}}/{{x}}/{{y}}.png?appid={OPENWEATHER_API_KEY}',
+            attr='&copy; <a href="https://openweathermap.org/">OpenWeatherMap</a>',
+            name='☁️ Clouds',
+            overlay=True,
+            control=True,
+            opacity=0.6
+        ).add_to(m)
+        
+        # Wind layer
+        folium.TileLayer(
+            tiles=f'https://tile.openweathermap.org/map/wind_new/{{z}}/{{x}}/{{y}}.png?appid={OPENWEATHER_API_KEY}',
+            attr='&copy; <a href="https://openweathermap.org/">OpenWeatherMap</a>',
+            name='💨 Wind Speed',
+            overlay=True,
+            control=True,
+            opacity=0.6
+        ).add_to(m)
+        
+        # Pressure layer
+        folium.TileLayer(
+            tiles=f'https://tile.openweathermap.org/map/pressure_new/{{z}}/{{x}}/{{y}}.png?appid={OPENWEATHER_API_KEY}',
+            attr='&copy; <a href="https://openweathermap.org/">OpenWeatherMap</a>',
+            name='🌡️ Pressure',
+            overlay=True,
+            control=True,
+            opacity=0.6
+        ).add_to(m)
+    
+    # Add major cities with weather markers
+    major_cities = [
+        {"name": "New York", "lat": 40.7128, "lon": -74.0060},
+        {"name": "Los Angeles", "lat": 34.0522, "lon": -118.2437},
+        {"name": "Chicago", "lat": 41.8781, "lon": -87.6298},
+        {"name": "Miami", "lat": 25.7617, "lon": -80.1918},
+        {"name": "Seattle", "lat": 47.6062, "lon": -122.3321},
+        {"name": "London", "lat": 51.5074, "lon": -0.1278},
+        {"name": "Paris", "lat": 48.8566, "lon": 2.3522},
+        {"name": "Tokyo", "lat": 35.6762, "lon": 139.6503},
+        {"name": "Sydney", "lat": -33.8688, "lon": 151.2093},
+        {"name": "Dubai", "lat": 25.2048, "lon": 55.2708},
+    ]
+    
+    for city in major_cities:
+        # Get current weather for the city
+        weather_info = get_quick_weather(city["name"])
+        
+        # Determine marker color based on temperature
+        temp = weather_info.get('temp', 20)
+        if isinstance(temp, str):
+            temp = 20  # Default if N/A
+            
+        if temp < 0:
+            color = 'blue'
+            icon = 'snowflake'
+        elif temp < 10:
+            color = 'lightblue'
+            icon = 'cloud'
+        elif temp < 20:
+            color = 'green'
+            icon = 'leaf'
+        elif temp < 30:
+            color = 'orange'
+            icon = 'sun'
+        else:
+            color = 'red'
+            icon = 'fire'
+        
+        # Create popup content
+        popup_html = f"""
+        <div style="font-family: Arial; width: 200px;">
+            <h4 style="margin: 0;">{city['name']}</h4>
+            <hr style="margin: 5px 0;">
+            <p style="margin: 5px 0;"><b>🌡️ Temp:</b> {weather_info.get('temp', 'N/A')}°C</p>
+            <p style="margin: 5px 0;"><b>☁️ Condition:</b> {weather_info.get('condition', 'N/A')}</p>
+            <p style="margin: 5px 0;"><b>💧 Humidity:</b> {weather_info.get('humidity', 'N/A')}%</p>
+            <p style="margin: 5px 0;"><b>💨 Wind:</b> {weather_info.get('wind', 'N/A')} km/h</p>
+            <small>Click anywhere to view full details</small>
+        </div>
+        """
+        
+        folium.Marker(
+            location=[city["lat"], city["lon"]],
+            popup=folium.Popup(popup_html, max_width=250),
+            tooltip=f"{city['name']}: {weather_info.get('temp', 'N/A')}°C",
+            icon=folium.Icon(color=color, icon='info-sign')
+        ).add_to(m)
+    
+    # Add minimap
+    minimap = plugins.MiniMap(toggle_display=True)
+    m.add_child(minimap)
+    
+    # Add measure control
+    plugins.MeasureControl(position='topleft', primary_length_unit='kilometers').add_to(m)
+    
+    # Add fullscreen option
+    plugins.Fullscreen(position='topleft').add_to(m)
+    
+    # Add mouse position
+    plugins.MousePosition().add_to(m)
+    
+    # Add layer control
+    folium.LayerControl(position='topright', collapsed=False).add_to(m)
+    
+    return m
+
+# =========================
+# GET QUICK WEATHER INFO
+# =========================
+def get_quick_weather(city: str) -> dict:
+    """Get quick weather data for map markers"""
+    try:
+        url = "http://api.weatherapi.com/v1/current.json"
+        params = {"key": WEATHERAPI_KEY, "q": city, "aqi": "no"}
+        response = requests.get(url, params=params, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        
+        return {
+            'temp': data['current']['temp_c'],
+            'condition': data['current']['condition']['text'],
+            'humidity': data['current']['humidity'],
+            'wind': data['current']['wind_kph']
+        }
+    except:
+        return {'temp': 'N/A', 'condition': 'N/A', 'humidity': 'N/A', 'wind': 'N/A'}
+
+# =========================
+# FETCH WEATHER BY COORDINATES
+# =========================
+def fetch_weather_by_coords(lat: float, lon: float):
+    """Fetch weather data using latitude and longitude"""
+    url = "http://api.weatherapi.com/v1/forecast.json"
+    params = {
+        "key": WEATHERAPI_KEY, 
+        "q": f"{lat},{lon}", 
+        "days": 2, 
+        "aqi": "yes"
+    }
+    try:
+        res = requests.get(url, params=params, timeout=10)
+        res.raise_for_status()
+        data = res.json()
+        return data
+    except Exception as e:
+        return {"error": str(e)}
 
 
 # =========================
@@ -234,8 +521,9 @@ def load_recent_city_weather(city: str, days: int = 30):
 # =========================
 def create_weather_context(df, city: str, limit: int = 20):
     """Create context from historical weather data for a specific city"""
-    city_data = df[df['city'].str.lower() == city.lower()]
-    
+    # city_data = df[df['city'].str.lower() == city.lower()]
+    city_data = df[df['clean_city'] == city.lower()]
+
     if city_data.empty:
         return None, None
     
@@ -268,56 +556,97 @@ def create_weather_context(df, city: str, limit: int = 20):
 # =========================
 # BERT-BASED WEATHER PREDICTION
 # =========================
-def predict_weather_with_bert(query: str, weather_df: pd.DataFrame, classifier):
-    """Use BERT to classify and predict weather based on historical data"""
+# def predict_weather_with_bert(query: str, weather_df: pd.DataFrame, classifier):
+#     """Use BERT to classify and predict weather based on historical data"""
+#     try:
+#         # Extract city from query
+#         # city = extract_city_from_query(query)
+#         city = selected_city
+
+#         if not city:
+#             return None, "Could not identify city in query. Please mention a city name."
+        
+#         # Get historical context
+#         context, stats = create_weather_context(weather_df, city)
+        
+#         if not context or not stats:
+#             return None, f"No historical data found for {city}. Try using Live Weather mode."
+        
+#         # Prepare input for BERT classifier
+#         # The model expects weather description text
+#         prediction_input = f"Weather forecast for {city}: Based on recent patterns showing {context}"
+        
+#         # Get classification
+#         result = classifier(prediction_input[:512])  # BERT max length
+        
+#         predicted_class = result[0]['label']
+#         confidence = result[0]['score']
+        
+#         # Generate comprehensive forecast
+#         forecast = f"""
+# 🔮 **Weather Forecast for {city}** (AI-Powered Prediction)
+
+# 🤖 **BERT Model Prediction:** 
+# - **Condition:** {predicted_class}
+# - **Confidence:** {confidence * 100:.1f}%
+
+# 📊 **Statistical Analysis** (Based on {stats['records_count']} recent records):
+# - **Average Temperature:** {stats['avg_temp']:.1f}°C
+# - **Temperature Range:** {stats['min_temp']:.1f}°C to {stats['max_temp']:.1f}°C
+
+# - **Average Wind Speed:** {stats['avg_wind']:.1f} km/h
+# - **Most Common Condition:** {stats['common_condition']}
+
+# 🎯 **Forecast Summary:**
+# Expect weather conditions similar to recent patterns. The AI model predicts **{predicted_class}** 
+# with {confidence * 100:.1f}% confidence based on historical data analysis.
+
+# ⚠️ *This prediction is based on historical patterns and AI classification.*
+# """
+# # - **Average Humidity:** {stats['avg_humidity']:.1f}%
+    
+#         return forecast, None
+        
+#     except Exception as e:
+#         return None, f"BERT prediction error: {str(e)}"
+
+def predict_weather_with_bert(weather_df: pd.DataFrame, classifier, city: str, task: str = ""):
+    """Use BERT to classify and predict weather based on historical data and optional task"""
     try:
-        # Extract city from query
-        city = extract_city_from_query(query)
-        
-        if not city:
-            return None, "Could not identify city in query. Please mention a city name."
-        
-        # Get historical context
+        # Get historical context for the city
         context, stats = create_weather_context(weather_df, city)
-        
         if not context or not stats:
-            return None, f"No historical data found for {city}. Try using Live Weather mode."
-        
-        # Prepare input for BERT classifier
-        # The model expects weather description text
-        prediction_input = f"Weather forecast for {city}: Based on recent patterns showing {context}"
-        
-        # Get classification
-        result = classifier(prediction_input[:512])  # BERT max length
-        
+            return None, f"No historical data found for {city}."
+
+        # Prepare input for BERT, including task if provided
+        if task:
+            prediction_input = f"Weather forecast for {city} for {task}: Based on recent patterns showing {context}"
+        else:
+            prediction_input = f"Weather forecast for {city}: Based on recent patterns showing {context}"
+
+        # Classify using BERT
+        result = classifier(prediction_input[:512])  # max token length
+
         predicted_class = result[0]['label']
         confidence = result[0]['score']
-        
-        # Generate comprehensive forecast
+
+        # Generate forecast message
         forecast = f"""
-🔮 **Weather Forecast for {city}** (AI-Powered Prediction)
+🔮 **Weather Forecast for {city.title()}** (AI-Powered Prediction)
 
-🤖 **BERT Model Prediction:** 
-- **Condition:** {predicted_class}
-- **Confidence:** {confidence * 100:.1f}%
+🏷️ **Task:** {task if task else 'General'}
+🤖 **BERT Prediction:** {predicted_class} ({confidence*100:.1f}% confidence)
 
-📊 **Statistical Analysis** (Based on {stats['records_count']} recent records):
-- **Average Temperature:** {stats['avg_temp']:.1f}°C
-- **Temperature Range:** {stats['min_temp']:.1f}°C to {stats['max_temp']:.1f}°C
+📊 **Statistics** (based on {stats['records_count']} records):
+- Avg Temp: {stats['avg_temp']:.1f}°C
+- Temp Range: {stats['min_temp']:.1f}°C to {stats['max_temp']:.1f}°C
+- Avg Wind: {stats['avg_wind']:.1f} km/h
+- Most Common Condition: {stats['common_condition']}
 
-- **Average Wind Speed:** {stats['avg_wind']:.1f} km/h
-- **Most Common Condition:** {stats['common_condition']}
-
-🎯 **Forecast Summary:**
-Expect weather conditions similar to recent patterns. The AI model predicts **{predicted_class}** 
-with {confidence * 100:.1f}% confidence based on historical data analysis.
-
-⚠️ *This prediction is based on historical patterns and AI classification.*
+⚠️ *Prediction is based on historical patterns for the city.*
 """
-# - **Average Humidity:** {stats['avg_humidity']:.1f}%
-    
         return forecast, None
-        
+
     except Exception as e:
         return None, f"BERT prediction error: {str(e)}"
 
@@ -560,8 +889,18 @@ def parse_agent_response(content: str) -> dict:
 # STREAMLIT UI
 # =========================
 st.set_page_config(page_title="Weather + AI Dashboard", layout="wide")
-st.title("🌦 Weather + AI Dashboard with BERT Forecasting")
 
+if "sidebar_open" not in st.session_state:
+    st.session_state.sidebar_open = True
+st.title("🌦 Weather + AI Dashboard with Interactive Map")
+
+# Initialize session state for selected location
+if 'selected_lat' not in st.session_state:
+    st.session_state.selected_lat = None
+if 'selected_lon' not in st.session_state:
+    st.session_state.selected_lon = None
+if 'map_city' not in st.session_state:
+    st.session_state.map_city = "New York"
 # Load BERT model and dataset
 # with st.spinner("🔄 Loading AI model and weather dataset..."):
 #     classifier= load_weather_model() #, tokenizer, model 
@@ -581,8 +920,62 @@ col1, col2 = st.columns([3, 2])
 # Left: Weather Dashboard
 # -------------------------
 with col1:
-    city_input = st.text_input("🔍 Enter a city:", value="Kansas City")
-    weather_data = fetch_weather(city_input)
+    # Search Input
+    search_col1, search_col2 = st.columns([3, 1])
+    
+    with search_col1:
+        city_input = st.text_input(
+            "🔍 Search for a city:", 
+            value=st.session_state.map_city,
+            key="city_search"
+        )
+    
+    with search_col2:
+        search_clicked = st.button("🔍 Search", use_container_width=True)
+    
+    if search_clicked:
+        st.session_state.map_city = city_input
+        st.session_state.selected_lat = None
+        st.session_state.selected_lon = None
+    
+    # Interactive Map Section
+    with st.container(border=True):
+        st.subheader("🗺️ Interactive Weather Map")
+        st.caption("Click on a location to view weather data. Toggle layers to see different weather conditions.")
+        
+        # Create the map
+        weather_map = create_weather_map()
+        
+        # Display the map and capture clicks
+        map_data = st_folium(
+            weather_map, 
+            width=None, 
+            height=500,
+            key="weather_map",
+            returned_objects=["last_clicked"]
+        )
+        
+        # Handle map clicks
+        if map_data and map_data.get("last_clicked"):
+            clicked_lat = map_data["last_clicked"]["lat"]
+            clicked_lon = map_data["last_clicked"]["lng"]
+            
+            if (st.session_state.selected_lat != clicked_lat or 
+                st.session_state.selected_lon != clicked_lon):
+                st.session_state.selected_lat = clicked_lat
+                st.session_state.selected_lon = clicked_lon
+                st.rerun()
+    
+    # Fetch weather data
+    if st.session_state.selected_lat and st.session_state.selected_lon:
+        weather_data = fetch_weather_by_coords(
+            st.session_state.selected_lat, 
+            st.session_state.selected_lon
+        )
+        source_label = f"📍 Map Location ({st.session_state.selected_lat:.4f}, {st.session_state.selected_lon:.4f})"
+    else:
+        weather_data = fetch_weather(st.session_state.map_city)
+        source_label = f"🔍 Search: {st.session_state.map_city}"
 
     if "error" in weather_data:
         st.error(weather_data["error"])
@@ -593,9 +986,21 @@ with col1:
         # SECTION 1: WEATHER DATA
         # =============================
         with st.container(border=True):
-            st.subheader(f"📍 {cur['city']}, {cur['region']}")
-            st.caption(f"🕒 Local Time: {cur['localtime']}")
+            col_title, col_source = st.columns([2, 1])
+            with col_title:
+                st.subheader(f"📍 {cur['city']}, {cur['region']}")
+            with col_source:
+                st.caption(source_label)
             
+            st.caption(f"🕒 Local Time: {cur['localtime']}")
+            # st.caption(f"📌 Coordinates: {cur['lat']:.4f}, {cur['lon']:.4f}")
+            lat = cur.get('lat') or cur.get('latitude')
+            lon = cur.get('lon') or cur.get('longitude')
+
+            if lat is not None and lon is not None:
+                st.caption(f"📌 Coordinates: {lat:.4f}, {lon:.4f}")
+            else:
+                st.caption("📌 Coordinates: N/A")
             # Main weather display
             main_col1, main_col2 = st.columns([1, 2])
             
@@ -641,88 +1046,6 @@ with col1:
             with m8:
                 st.metric(label="🌇 Sunset", value=cur['sunset'])
         
-        # =============================
-        # SECTION 2: PLOTLY CHART
-        # =============================
-        # with st.container(border=True):
-        #     st.subheader("📊 24-Hour Forecast")
-            
-        #     times_12h, temps_12h, humidity_12h, conditions_12h = get_24h_data(weather_data)
-            
-        #     # Tab selection for different views
-        #     tab1, tab2, tab3 = st.tabs(["📈 Combined", "🌡️ Temperature", "💧 Humidity"])
-            
-        #     with tab1:
-        #         fig = go.Figure()
-        #         fig.add_trace(go.Scatter(
-        #             x=times_12h, 
-        #             y=temps_12h, 
-        #             name="Temp (°C)", 
-        #             line=dict(color='#ff6b6b', width=3),
-        #             fill='tozeroy',
-        #             fillcolor='rgba(255, 107, 107, 0.1)',
-        #             text=conditions_12h,  # this adds hover text
-        #             hovertemplate='%{x}<br>%{y}°C<br>Condition: %{text}<extra></extra>'
-        #         ))
-        #         fig.add_trace(go.Scatter(
-        #             x=times_12h, 
-        #             y=humidity_12h, 
-        #             name="Humidity %", 
-        #             line=dict(color='#4ecdc4', width=3),
-        #             yaxis="y2",
-        #             text=conditions_12h,  # this adds hover text
-        #             hovertemplate='%{x}<br>%{y}°C<br>Condition: %{text}<extra></extra>'
-        #         ))
-        #         fig.update_layout(
-        #             yaxis=dict(title="Temperature (°C)"),
-        #             yaxis2=dict(title="Humidity %", overlaying="y", side="right"),
-        #             xaxis_tickangle=-45,
-        #             height=400,
-        #             hovermode='x unified',
-        #             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-        #         )
-        #         st.plotly_chart(fig, use_container_width=True)
-            
-        #     with tab2:
-        #         fig_temp = go.Figure()
-        #         fig_temp.add_trace(go.Scatter(
-        #             x=times_12h,
-        #             y=temps_12h,
-        #             name="Temperature",
-        #             line=dict(color='#ff6b6b', width=3),
-        #             fill='tozeroy',
-        #             fillcolor='rgba(255, 107, 107, 0.2)',
-        #             text=conditions_12h,  # this adds hover text
-        #             hovertemplate='%{x}<br>%{y}°C<br>Condition: %{text}<extra></extra>'
-                
-        #         ))
-        #         fig_temp.update_layout(
-        #             yaxis=dict(title="Temperature (°C)"),
-        #             xaxis_tickangle=-45,
-        #             height=400,
-        #             hovermode='x unified'
-        #         )
-        #         st.plotly_chart(fig_temp, use_container_width=True)
-            
-        #     with tab3:
-        #         fig_hum = go.Figure()
-        #         fig_hum.add_trace(go.Bar(
-        #             x=times_12h,
-        #             y=humidity_12h,
-        #             name="Humidity",
-        #             marker_color='#4ecdc4',
-        #             text=conditions_12h,  # this adds hover text
-        #             hovertemplate='%{x}<br>%{y}°C<br>Condition: %{text}<extra></extra>'
-                
-        #         ))
-        #         fig_hum.update_layout(
-        #             yaxis=dict(title="Humidity %"),
-        #             xaxis_tickangle=-45,
-        #             height=400,
-        #             hovermode='x unified'
-        #         )
-        #         st.plotly_chart(fig_hum, use_container_width=True)
-       
         # =============================
         # SECTION 2: PLOTLY ICON TIMELINE
         # =============================
@@ -861,7 +1184,19 @@ with col2:
             ["🔮 BERT Forecast", "🌐 Live Weather"],
             help="BERT uses historical data, Live uses real-time API"
         )
-        
+        # Load dataset
+        weather_df, latency = load_weather_dataset()
+
+        # Create city dropdown
+        available_cities = sorted(weather_df['clean_city'].unique())
+        selected_city = st.selectbox("Select City", available_cities)
+        selected_city = selected_city.lower()  # ensure matching with clean_city
+
+        task_input = st.text_input(
+            "Weather task / activity (optional):",
+            placeholder="e.g., hiking, running, picnic"
+        )
+
         ai_input = st.text_input(
             "Ask about weather:", 
             key="ai_input", 
@@ -873,20 +1208,34 @@ with col2:
                 with st.spinner("🔄 Processing..."):
                     if "BERT" in query_mode:
                         # Use BERT for prediction
+                        # if classifier:
+                        #     prediction, error = predict_weather_with_bert(
+                        #         ai_input, weather_df, classifier
+                        #     )
+                            
+                        #     if prediction:
+                        #         st.markdown(prediction)
+                        #         log_query(ai_input, prediction, source="BERT")
+                        #     else:
+                        #         st.warning(f"⚠️ {error}")
+                        #         # Fallback to API
+                        #         st.info("🔄 Switching to Live Weather API...")
+                        #         answer = run_agent(ai_input)
+                        #         st.success(answer)
                         if classifier:
                             prediction, error = predict_weather_with_bert(
-                                ai_input, weather_df, classifier
+                                weather_df, classifier, selected_city, task_input
                             )
                             
                             if prediction:
                                 st.markdown(prediction)
-                                log_query(ai_input, prediction, source="BERT")
+                                log_query(f"{selected_city} | Task: {task_input}", prediction, source="BERT")
                             else:
                                 st.warning(f"⚠️ {error}")
-                                # Fallback to API
+                                # Fallback to Live API
                                 st.info("🔄 Switching to Live Weather API...")
-                                answer = run_agent(ai_input)
-                                st.success(answer)
+                                answer = run_agent(f"{selected_city} {task_input}")
+                                st.success(answer)                       
                         else:
                             st.error("❌ BERT model not loaded. Using API fallback.")
                             answer = run_agent(ai_input)

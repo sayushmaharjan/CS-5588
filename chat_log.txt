@@ -1,0 +1,220 @@
+============================================================
+Timestamp   : 2026-03-01 23:13:41
+Source      : API
+User Query  : weather at los angeles during winter for hiking?
+Weather Data: Current weather in Los Angeles: Clear. Temperature: 18.9°C (feels like 18.9°C), Humidity: 70%, Wind: 7.2 km/h
+Bot Response: The weather in Los Angeles is clear and pleasant, with a temperature of 18.9°C, making it suitable for hiking during winter
+============================================================
+
+============================================================
+Timestamp   : 2026-03-01 23:13:56
+Source      : API
+User Query  : weather at paris during winter for hiking?
+Weather Data: Current weather in Paris: Clear. Temperature: 7.0°C (feels like 5.0°C), Humidity: 81%, Wind: 10.4 km/h
+Bot Response: The weather in Paris is currently clear with a temperature of 7.0°C, humidity of 81%, and wind of 10.4 km/h, making it moderately suitable for winter hiking, but it's recommended to dress warmly and wear waterproof gear.
+============================================================
+
+============================================================
+Timestamp   : 2026-03-01 23:33:18
+Source      : API
+User Query  : predict tomorrow weather
+Weather Data: Current weather in New York: Clear. Temperature: -1.1°C (feels like -5.1°C), Humidity: 36%, Wind: 11.9 km/h
+Bot Response: Tomorrow's weather in New York is expected to be cold, possibly remaining clear with temperatures around or below 0°C
+============================================================
+
+============================================================
+Timestamp   : 2026-03-01 23:51:48
+Source      : BERT
+User Query  : how is the weather?
+Bot Response: 
+🔮 **Weather Forecast for jfk international airport** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** NEGATIVE
+- **Confidence:** 96.3%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 57.7°C
+- **Temperature Range:** 30.3°C to 77.4°C
+
+- **Average Wind Speed:** 11.3 km/h
+- **Most Common Condition:** Rainy
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **NEGATIVE** 
+with 96.3% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+
+============================================================
+
+============================================================
+Timestamp   : 2026-03-01 23:52:07
+Source      : BERT
+User Query  : how is the weather for hiking?
+Bot Response: 
+🔮 **Weather Forecast for jfk international airport** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** NEGATIVE
+- **Confidence:** 96.3%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 57.7°C
+- **Temperature Range:** 30.3°C to 77.4°C
+
+- **Average Wind Speed:** 11.3 km/h
+- **Most Common Condition:** Rainy
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **NEGATIVE** 
+with 96.3% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+
+============================================================
+
+============================================================
+Timestamp   : 2026-03-01 23:52:10
+Source      : BERT
+User Query  : how is the weather for hiking?
+Bot Response: 
+🔮 **Weather Forecast for jfk international airport** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** NEGATIVE
+- **Confidence:** 96.3%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 57.7°C
+- **Temperature Range:** 30.3°C to 77.4°C
+
+- **Average Wind Speed:** 11.3 km/h
+- **Most Common Condition:** Rainy
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **NEGATIVE** 
+with 96.3% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+
+============================================================
+
+============================================================
+Timestamp   : 2026-03-01 23:52:20
+Source      : BERT
+User Query  : how is the weather for hiking?
+Bot Response: 
+🔮 **Weather Forecast for putnam lake** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** NEGATIVE
+- **Confidence:** 98.5%
+
+📊 **Statistical Analysis** (Based on 6 recent records):
+- **Average Temperature:** 49.3°C
+- **Temperature Range:** 31.4°C to 68.9°C
+
+- **Average Wind Speed:** nan km/h
+- **Most Common Condition:** Rainy
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **NEGATIVE** 
+with 98.5% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+
+============================================================
+
+============================================================
+Timestamp   : 2026-03-01 23:53:15
+Source      : BERT
+User Query  : how is the weather in winter?
+Bot Response: 
+🔮 **Weather Forecast for world trade center** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** NEGATIVE
+- **Confidence:** 98.2%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 50.8°C
+- **Temperature Range:** 32.6°C to 73.7°C
+
+- **Average Wind Speed:** 6.0 km/h
+- **Most Common Condition:** Snowy
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **NEGATIVE** 
+with 98.2% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+
+============================================================
+
+============================================================
+Timestamp   : 2026-03-01 23:53:26
+Source      : BERT
+User Query  : m
+Bot Response: 
+🔮 **Weather Forecast for boonton** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** NEGATIVE
+- **Confidence:** 98.3%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 54.8°C
+- **Temperature Range:** 26.1°C to 76.1°C
+
+- **Average Wind Speed:** nan km/h
+- **Most Common Condition:** Rainy
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **NEGATIVE** 
+with 98.3% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+
+============================================================
+
+============================================================
+Timestamp   : 2026-03-02 00:01:48
+Source      : BERT
+User Query  : centerport | Task: hiking
+Bot Response: 
+🔮 **Weather Forecast for Centerport** (AI-Powered Prediction)
+
+🏷️ **Task:** hiking
+🤖 **BERT Prediction:** NEGATIVE (98.4% confidence)
+
+📊 **Statistics** (based on 20 records):
+- Avg Temp: 55.1°C
+- Temp Range: 28.3°C to 76.4°C
+- Avg Wind: nan km/h
+- Most Common Condition: Rainy
+
+⚠️ *Prediction is based on historical patterns for the city.*
+
+============================================================
+
+============================================================
+Timestamp   : 2026-03-02 00:02:05
+Source      : BERT
+User Query  : putnam lake | Task: hiking
+Bot Response: 
+🔮 **Weather Forecast for Putnam Lake** (AI-Powered Prediction)
+
+🏷️ **Task:** hiking
+🤖 **BERT Prediction:** NEGATIVE (98.5% confidence)
+
+📊 **Statistics** (based on 6 records):
+- Avg Temp: 49.3°C
+- Temp Range: 31.4°C to 68.9°C
+- Avg Wind: nan km/h
+- Most Common Condition: Rainy
+
+⚠️ *Prediction is based on historical patterns for the city.*
+
+============================================================
+

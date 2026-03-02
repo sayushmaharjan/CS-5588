@@ -1,0 +1,374 @@
+# app.py
+import os
+import json
+import requests
+import streamlit as st
+from dotenv import load_dotenv
+from openai import OpenAI
+from datetime import datetime
+import plotly.graph_objects as go
+
+# =========================
+# LOAD ENV
+# =========================
+load_dotenv()
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY") 
+WEATHERAPI_KEY = os.getenv("WEATHERAPI_KEY") 
+
+client = OpenAI(
+    api_key=GROQ_API_KEY,
+    base_url="https://api.groq.com/openai/v1"
+)
+
+MODEL = "llama-3.3-70b-versatile"
+LOG_FILE = "chat_log.txt"
+
+# =========================
+# LOGGING FUNCTION
+# =========================
+def log_query(user_input: str, bot_response: str, weather_data: str = None):
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write("="*60 + "\n")
+        f.write(f"Timestamp   : {timestamp}\n")
+        f.write(f"User Query  : {user_input}\n")
+        if weather_data:
+            f.write(f"Weather Data: {weather_data}\n")
+        f.write(f"Bot Response: {bot_response}\n")
+        f.write("="*60 + "\n\n")
+
+# =========================
+# WEATHER FUNCTIONS
+# =========================
+def fetch_weather(city: str):
+    url = "http://api.weatherapi.com/v1/forecast.json"
+    params = {"key": WEATHERAPI_KEY, "q": city, "days": 2, "aqi": "yes"}
+    try:
+        res = requests.get(url, params=params, timeout=10)
+        res.raise_for_status()
+        data = res.json()
+        return data
+    except Exception as e:
+        return {"error": str(e)}
+
+def parse_current(data):
+    cur = data["current"]
+    loc = data["location"]
+    return {
+        "city": loc["name"],
+        "region": loc["region"],
+        "localtime": loc["localtime"],
+        "temp_c": cur["temp_c"],
+        "condition": cur["condition"]["text"],
+        "humidity": cur["humidity"],
+        "wind_kph": cur["wind_kph"],
+        "pressure_mb": cur["pressure_mb"],
+        "vis_km": cur["vis_km"],
+        "uv": cur["uv"],
+        "aqi": cur.get("air_quality", {}).get("us-epa-index", "N/A"),
+        "sunrise": data["forecast"]["forecastday"][0]["astro"]["sunrise"],
+        "sunset": data["forecast"]["forecastday"][0]["astro"]["sunset"]
+    }
+
+def get_24h_data(data):
+    hours = data["forecast"]["forecastday"][0]["hour"]
+    times = [h["time"].split(" ")[1] for h in hours]
+    temps = [h["temp_c"] for h in hours]
+    humidity = [h["humidity"] for h in hours]
+    return times, temps, humidity
+
+# =========================
+# AI AGENT FUNCTIONS
+# =========================
+SYSTEM_PROMPT = """You are a helpful AI agent that can use tools to find weather information.
+
+IMPORTANT: You must ALWAYS respond with a single line of valid JSON. No markdown, no extra text.
+
+Available actions:
+1. get_weather - Use this to fetch current weather for a city
+2. user_answer - Use this to give the final answer to the user
+
+Response format (strict JSON only):
+{"thought": "your reasoning", "action": "get_weather", "action_input": "city name"}
+or
+{"thought": "your reasoning", "action": "user_answer", "action_input": "your final answer"}
+"""
+
+def get_weather(city: str) -> str:
+    url = "http://api.weatherapi.com/v1/current.json"
+    params = {
+        "key": WEATHERAPI_KEY,
+        "q": city,
+        "aqi": "no"
+    }
+
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+
+        description = data["current"]["condition"]["text"]
+        temperature = data["current"]["temp_c"]
+        humidity = data["current"]["humidity"]
+        feels_like = data["current"]["feelslike_c"]
+        wind_kph = data["current"]["wind_kph"]
+
+        return (
+            f"Current weather in {city}: {description}. "
+            f"Temperature: {temperature}°C (feels like {feels_like}°C), "
+            f"Humidity: {humidity}%, Wind: {wind_kph} km/h"
+        )
+
+    except requests.exceptions.HTTPError:
+        return f"Error: Could not find weather for '{city}'."
+    except Exception as e:
+        return f"Error fetching weather data: {str(e)}"
+
+
+def run_agent(user_input: str) -> str:
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": user_input}
+    ]
+
+    max_steps = 5
+    step = 0
+    weather_info = None
+
+    while step < max_steps:
+        try:
+            response = client.chat.completions.create(
+                model=MODEL,
+                messages=messages,
+                temperature=0
+            )
+        except Exception as e:
+            error_msg = f"❌ API Error: {str(e)}"
+            log_query(user_input, error_msg)
+            return error_msg
+
+        content = response.choices[0].message.content.strip()
+
+        try:
+            content_json = parse_agent_response(content)
+            action = content_json.get("action", "")
+            action_input = content_json.get("action_input", "")
+
+            if action == "user_answer":
+                log_query(user_input, action_input, weather_info)
+                return action_input
+
+            if action == "get_weather":
+                weather_info = get_weather(action_input)
+                messages.append({"role": "assistant", "content": content})
+                messages.append({
+                    "role": "user",
+                    "content": f"Observation: {weather_info}\n\nNow respond with a user_answer action."
+                })
+            else:
+                error_msg = f"Unknown action: {action}"
+                log_query(user_input, error_msg)
+                return error_msg
+
+        except json.JSONDecodeError:
+            log_query(user_input, content, weather_info)
+            return content
+
+        step += 1
+
+    error_msg = "⚠️ Max steps reached."
+    log_query(user_input, error_msg)
+    return error_msg
+
+# =========================
+# PARSE JSON (robust)
+# =========================
+def parse_agent_response(content: str) -> dict:
+    content = content.strip()
+    if content.startswith("```"):
+        lines = content.split("\n")
+        lines = [l for l in lines if not l.strip().startswith("```")]
+        content = "\n".join(lines).strip()
+    return json.loads(content)
+
+# =========================
+# STREAMLIT UI
+# =========================
+st.set_page_config(page_title="Weather + AI Dashboard", layout="wide")
+st.title("🌦 Weather + AI Dashboard")
+
+col1, col2 = st.columns([3, 2])
+
+# -------------------------
+# Left: Weather Dashboard
+# -------------------------
+with col1:
+    city_input = st.text_input("🔍 Enter a city:", value="New York")
+    weather_data = fetch_weather(city_input)
+
+    if "error" in weather_data:
+        st.error(weather_data["error"])
+    else:
+        cur = parse_current(weather_data)
+        
+        # =============================
+        # SECTION 1: WEATHER DATA
+        # =============================
+        with st.container(border=True):
+            st.subheader(f"📍 {cur['city']}, {cur['region']}")
+            st.caption(f"🕒 Local Time: {cur['localtime']}")
+            
+            # Main weather display
+            main_col1, main_col2 = st.columns([1, 2])
+            
+            with main_col1:
+                st.metric(
+                    label="🌡️ Temperature",
+                    value=f"{cur['temp_c']}°C",
+                    delta=cur['condition']
+                )
+            
+            with main_col2:
+                st.info(f"**Condition:** {cur['condition']}")
+            
+            st.divider()
+            
+            # Metrics Row 1
+            m1, m2, m3, m4 = st.columns(4)
+            
+            with m1:
+                st.metric(label="💧 Humidity", value=f"{cur['humidity']}%")
+            
+            with m2:
+                st.metric(label="💨 Wind", value=f"{cur['wind_kph']} km/h")
+            
+            with m3:
+                st.metric(label="🌡️ Pressure", value=f"{cur['pressure_mb']} mb")
+            
+            with m4:
+                st.metric(label="👁️ Visibility", value=f"{cur['vis_km']} km")
+            
+            # Metrics Row 2
+            m5, m6, m7, m8 = st.columns(4)
+            
+            with m5:
+                st.metric(label="☀️ UV Index", value=cur['uv'])
+            
+            with m6:
+                st.metric(label="🌫️ AQI", value=cur['aqi'])
+            
+            with m7:
+                st.metric(label="🌅 Sunrise", value=cur['sunrise'])
+            
+            with m8:
+                st.metric(label="🌇 Sunset", value=cur['sunset'])
+        
+        # =============================
+        # SECTION 2: PLOTLY CHART
+        # =============================
+        with st.container(border=True):
+            st.subheader("📊 24-Hour Forecast")
+            
+            times, temps, humidity = get_24h_data(weather_data)
+            
+            # Tab selection for different views
+            tab1, tab2, tab3 = st.tabs(["📈 Combined", "🌡️ Temperature", "💧 Humidity"])
+            
+            with tab1:
+                fig = go.Figure()
+                fig.add_trace(go.Scatter(
+                    x=times, 
+                    y=temps, 
+                    name="Temp (°C)", 
+                    line=dict(color='#ff6b6b', width=3),
+                    fill='tozeroy',
+                    fillcolor='rgba(255, 107, 107, 0.1)'
+                ))
+                fig.add_trace(go.Scatter(
+                    x=times, 
+                    y=humidity, 
+                    name="Humidity %", 
+                    line=dict(color='#4ecdc4', width=3),
+                    yaxis="y2"
+                ))
+                fig.update_layout(
+                    yaxis=dict(title="Temperature (°C)"),
+                    yaxis2=dict(title="Humidity %", overlaying="y", side="right"),
+                    xaxis_tickangle=-45,
+                    height=400,
+                    hovermode='x unified',
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            
+            with tab2:
+                fig_temp = go.Figure()
+                fig_temp.add_trace(go.Scatter(
+                    x=times,
+                    y=temps,
+                    name="Temperature",
+                    line=dict(color='#ff6b6b', width=3),
+                    fill='tozeroy',
+                    fillcolor='rgba(255, 107, 107, 0.2)'
+                ))
+                fig_temp.update_layout(
+                    yaxis=dict(title="Temperature (°C)"),
+                    xaxis_tickangle=-45,
+                    height=400,
+                    hovermode='x unified'
+                )
+                st.plotly_chart(fig_temp, use_container_width=True)
+            
+            with tab3:
+                fig_hum = go.Figure()
+                fig_hum.add_trace(go.Bar(
+                    x=times,
+                    y=humidity,
+                    name="Humidity",
+                    marker_color='#4ecdc4'
+                ))
+                fig_hum.update_layout(
+                    yaxis=dict(title="Humidity %"),
+                    xaxis_tickangle=-45,
+                    height=400,
+                    hovermode='x unified'
+                )
+                st.plotly_chart(fig_hum, use_container_width=True)
+
+# -------------------------
+# Right: AI Assistant
+# -------------------------
+with col2:
+    with st.container(border=True):
+        st.subheader("🤖 AI Assistant")
+        
+        ai_input = st.text_input(
+            "Ask about weather:", 
+            key="ai_input", 
+            placeholder="e.g., Weather in Paris?"
+        )
+        
+        if st.button("🔍 Ask AI", key="ask_btn", use_container_width=True):
+            if ai_input:
+                with st.spinner("Thinking..."):
+                    answer = run_agent(ai_input)
+                    st.success(answer)
+            else:
+                st.warning("Please enter a question.")
+    
+    with st.container(border=True):
+        st.subheader("📋 Recent Logs")
+        
+        if os.path.exists(LOG_FILE):
+            with open(LOG_FILE, "r", encoding="utf-8") as f:
+                logs = f.read()
+            
+            with st.expander("View Logs", expanded=False):
+                st.code(logs[-2000:], language=None)
+            
+            if st.button("🗑️ Clear Logs", use_container_width=True):
+                os.remove(LOG_FILE)
+                st.rerun()
+        else:
+            st.info("No logs yet.")

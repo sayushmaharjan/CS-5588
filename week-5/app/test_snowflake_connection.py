@@ -47,7 +47,7 @@ conn = snowflake.connector.connect(
 )
 
 cur = conn.cursor()
-cur.execute("SELECT CURRENT_ACCOUNT(), CURRENT_USER(), CURRENT_DATABASE(), CURRENT_SCHEMA()")
+cur.execute("SELECT CURRENT_ACCOUNT(), CURRENT_USER(), CURRENT_WAREHOUSE(), CURRENT_DATABASE(), CURRENT_SCHEMA()")
 print(cur.fetchall())
 cur.close()
 conn.close()

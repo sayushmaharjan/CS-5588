@@ -1,0 +1,7 @@
+timestamp,query,latency_sec,rows
+2026-03-02T05:13:31.368062+00:00,load_weather_dataset,1.3963,1691
+2026-03-02T05:20:07.663734+00:00,load_weather_dataset,0.7766,1691
+2026-03-02T05:32:57.110731+00:00,load_weather_dataset,0.3722,1691
+2026-03-02T05:51:30.565908+00:00,load_weather_dataset,0.5245,1691
+2026-03-02T08:58:11.218791+00:00,load_weather_dataset,1.5127,1691
+2026-03-02T09:15:44.796511+00:00,load_weather_dataset,0.6648,1691
