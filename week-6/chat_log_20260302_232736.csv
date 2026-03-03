@@ -1,0 +1,80 @@
+timestamp,role,content,city
+2026-03-01 14:38:38,user,Will it rain in New York today?,New York
+============================================================
+Timestamp   : 2026-03-01 14:38:39
+Source      : API
+User Query  : Will it rain in New York today?
+Weather Data: Current weather in New York: Cloudy. Temperature: 5.3°C (feels like 1.7°C), Humidity: 41%, Wind: 17.6 km/h
+Bot Response: It's possible that it may rain in New York today, but it's not guaranteed
+============================================================
+
+2026-03-01 14:38:39,assistant,"It's possible that it may rain in New York today, but it's not guaranteed",New York
+2026-03-02 23:17:11,user,What are the skiing conditions at Lake Tahoe?,New York
+============================================================
+Timestamp   : 2026-03-02 23:17:12
+Source      : API
+User Query  : What are the skiing conditions at Lake Tahoe?
+Weather Data: Current weather in Lake Tahoe: Clear. Temperature: 6.1°C (feels like 5.6°C), Humidity: 56%, Wind: 4.3 km/h
+Bot Response: The skiing conditions at Lake Tahoe are currently good, with clear skies and a temperature of 6.1°C, making it ideal for a day on the slopes
+============================================================
+
+2026-03-02 23:17:12,assistant,"The skiing conditions at Lake Tahoe are currently good, with clear skies and a temperature of 6.1°C, making it ideal for a day on the slopes",New York
+2026-03-02 23:23:39,user,Will it rain in New York today?,New York
+============================================================
+Timestamp   : 2026-03-02 23:23:40
+Source      : API
+User Query  : Will it rain in New York today?
+Weather Data: Current weather in New York: Clear. Temperature: -1.1°C (feels like -4.7°C), Humidity: 63%, Wind: 10.1 km/h
+Bot Response: No, it will not rain in New York today
+============================================================
+
+2026-03-02 23:23:40,assistant,"No, it will not rain in New York today",New York
+2026-03-02 23:24:46,user,"weather from los angeles to san fransisco
+",New York
+============================================================
+Timestamp   : 2026-03-02 23:24:46
+Source      : BERT
+User Query  : weather from los angeles to san fransisco
+
+Bot Response: 
+🔮 **Weather Forecast for Los Angeles** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** POSITIVE
+- **Confidence:** 65.2%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 67.9°C
+- **Temperature Range:** 58.0°C to 77.6°C
+
+- **Average Wind Speed:** nan km/h
+- **Most Common Condition:** Clear
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **POSITIVE** 
+with 65.2% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+
+============================================================
+
+2026-03-02 23:24:46,assistant,"
+🔮 **Weather Forecast for Los Angeles** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** POSITIVE
+- **Confidence:** 65.2%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 67.9°C
+- **Temperature Range:** 58.0°C to 77.6°C
+
+- **Average Wind Speed:** nan km/h
+- **Most Common Condition:** Clear
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **POSITIVE** 
+with 65.2% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+",New York

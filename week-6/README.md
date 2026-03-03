@@ -1,199 +1,158 @@
-# WeatherTwin Dashboard
+# WeatherTwin
 
-An interactive Streamlit dashboard designed to visualize historical weather patterns directly from Snowflake. This project leverages **Snowpark** to perform in-database data processing, enabling high performance even with large datasets.
+## Team Name
+**Team 2 — WeatherTwin**
 
-## Architecture
+## Team Members
+- **Harsha Sri Neeriganti**  
+  GitHub: Harsha Sri Neeriganti	https://github.com/Harsha-Sri24
 
-The application follows a **data-app decoupled architecture**:
+- **Sayush Maharjan**  
+  GitHub: Sayush Maharjan	https://github.com/sayushmaharjan
 
-* **Data Layer:** Snowflake stores raw and aggregated weather data. Snowpark handles transformations.
-* **Application Layer:** Streamlit dashboards (local or cloud) query and visualize the data.
-* **UI Layer:** Interactive charts, filters, and metrics delivered via Streamlit.
-<img width="1536" height="1024" alt="Architecture" src="https://github.com/user-attachments/assets/6a2afffe-ed2f-4b79-882f-c5ffdea21e36" />
 
----
+## Project Summary
+WeatherTwin is a GenAI-powered climate intelligence assistant that goes beyond basic weather forecasts to provide **personalized, context-aware, and explainable weather insights**.  
+It combines large language models (LLMs) with **Retrieval-Augmented Generation (RAG)** to translate complex weather and climate data into clear, actionable explanations tailored to a user’s location, time horizon, and specific needs.
 
-## Implemented Extensions
-
-### Automated Feature-Engineering Pipeline (Data / Feature Extension)
-
-Implemented entirely in Snowflake views:
-
-* **WEATHER_ENRICHED**
-
-  * Cleans `DATE` into `OBS_DATE` using robust parsing (`TRY_TO_DATE` with fallback).
-  * Derives `CITY` from `NAME`.
-  * Derives categorical `CONDITION` from `PRCP` and `SNOW`.
-
-* **CITY_STATS**
-
-  * Computes city-level KPIs: `AVG_TEMP`, `MIN_TEMP`, `MAX_TEMP`, `AVG_WIND`, `RAINY_DAYS`.
-
-* **V_WEATHER_WITH_CITY_STATS**
-
-  * Joins row-level records with city-level features for downstream analytics.
-
-### Monitoring Dashboard for Pipeline Performance (System Extension)
-
-* **Logging Utilities (`python/logging_utils.py` + `python/snowflake_client.py`)**
-
-  * Logs every Snowflake query with `{timestamp, query_name, latency_sec, rows}` into `pipeline_logs.csv`.
-
-* **Streamlit Panel**
-
-  * Shows recent logs, total query count, and latency time-series plots for monitoring pipeline performance.
-
-### Interactive Analytics Dashboard Component (System Extension)
-
-* **Dataset Info Section (`app_bert.py`)**
-
-  * Displays Snowflake-backed metrics: record count, number of cities, and load latency.
-  * Shows city-level KPIs from `CITY_STATS`.
-  * Allows user to select a city and view last 30 days of weather data from `RECENT_CITY_WEATHER`.
+By grounding responses in historical climate records and trusted sources, WeatherTwin helps users understand whether current conditions are typical, unusual, or risky compared to long-term patterns. The system emphasizes **trust, transparency, and uncertainty awareness**, enabling informed decision-making for everyday users and professionals.
 
 ---
 
-## 👥 Contributors & Workflows
+## Problem Statement & Impact
+Most weather applications focus on short-term predictions (temperature, rain, alerts) without explaining **context** — whether conditions are unusual, risky, or part of a larger trend.  
+This lack of explanation leads to confusion, misjudged risk, and reduced trust.
 
-This project supports **two development workflows**, allowing flexibility for local and cloud-based development.
-
-**1. Harsha Sri Neeriganti - Cloud-Native Developer (Direct in Snowflake)**
-
-* **Environment:** Streamlit app inside Snowsight.
-* **Authentication:** Automatic using `get_active_session()`.
-* **Advantage:** No setup; live connection to Snowflake.
-
-**Responsibilities & Contributions:**
-
-* Uploaded raw weather data directly to Snowflake via CSV ingestion.
-* Developed the multi-city interactive dashboard for selection and comparison.
-* Implemented real-time metrics calculations (Max/Min temperatures, Precipitation) using Snowpark in-database computations.
-* Optimized queries for performance to handle large datasets efficiently.
-* Integrated time-series visualizations and dynamic filters using Streamlit and Plotly.
-
-**2. Sayush Maharjan - Local Developer (Remote Connection to Snowflake)**
-
-* **Environment:** Local IDE (VS Code).
-* **Authentication:** MFA-authenticated Snowflake connection.
-* **Advantage:** Full control, faster iteration, and local debugging tools.
-
-**Responsibilities & Contributions:**
-
-* Connected to Snowflake to fetch and transform data for local testing.
-* Developed local Streamlit dashboard for offline iteration.
-* Implemented hybrid code support for both local and cloud usage.
-* Added interactive charts and dynamic filters for quick exploration.
-* Assisted with data validation and cleaning for consistent results across environments.
-
-Together, both workflows enable seamless development: cloud offers zero-setup deployment, local allows flexible testing.
+WeatherTwin addresses this gap by treating weather as a **decision-support problem**, grounding current conditions in historical climate patterns and clearly explaining why they matter.
 
 ---
 
-## Setup & Installation
+## Target Users & Stakeholders
+- **Everyday Users & Travelers**  
+  Planning daily activities, travel, or outdoor events with better context.
+- **Urban Planners & Local Governments**  
+  Assessing risks, infrastructure planning, and climate-informed decisions.
+- **Data Analysts & Educators**  
+  Exploring climate trends with explainable and reproducible outputs.
 
-### For Local Contributors
-
-1. **Install dependencies:**
-
-```bash
-pip install snowflake-snowpark-python streamlit pandas plotly
-```
-
-2. **Configure credentials:**
-
-```python
-account="SFEDU02-DCB73175"
-user="GIRAFFE"
-authenticator="snowflake"
-password=<from env or constant>
-passcode=<MFA TOTP, prompted in terminal>
-role="TRAINING_ROLE"
-warehouse="WEATHER_TWIN_WH"
-database="WEATHER_TWIN_DB"
-schema="PUBLIC"
-```
-
-### For Cloud Contributors
-
-1. Open **Snowsight** → **Streamlit**.
-2. Create a new app.
-3. Copy `app_snowflake.py` contents (or your main `streamlit_app.py`) into the editor.
-4. Add required packages via the **Packages** dropdown.
+### Stakeholder Needs
+- Contextualized and reliable weather explanations  
+- Evidence-backed and citation-based reasoning  
+- Integration of historical data with current conditions
 
 ---
 
-## 🛠️ Hybrid Code Support
-
-```python
-from snowflake.snowpark.context import get_active_session
-from snowflake.snowpark import Session
-try:
-     session = get_active_session()
-except Exception:
-      st.error("No active Snowflake session found. Run inside Snowflake Projects.")
-      st.stop()
-
-session = get_session()
-```
+## Decisions & Workflows Improved
+- **Daily Planning:** Understand if weather is unusual for a given place and time  
+- **Risk Awareness:** Compare current conditions with historical patterns  
+- **Trend Detection:** Identify extreme or emerging weather patterns early  
+- **Trust & Verification:** Transparent sourcing and human feedback loops  
 
 ---
 
-## 📂 Project Structure
+## Related Work
+1. **Retrieval-Augmented Generation with Grounded Attribution**  
+   Gao et al., 2023 — https://arxiv.org/abs/2305.14627  
+   Informs citation-backed RAG design and grounding evaluation.
 
-```
-weather-dashboard/
-│
-├─ load_weather_csv.py
-├─ snowflake_app.py            # Streamlit app for cloud deployment in Snowflake
-├─ app_bert.py                 # Streamlit app for local development
-├─ snowflake_client.py         # Shared core logic (optional if using hybrid code)
-│
-├─ requirements.txt            # Local dependencies
-├─ environment.yml             # Cloud environment dependencies
+2. **ClimaX: A Foundation Model for Weather and Climate**  
+   Nguyen et al., ICML 2023 — https://arxiv.org/abs/2301.10343  
+   Inspires representation of multi-variable climate data.
 
-```
-
-## 📂 Project Structure for local implementation
-
-```
-week-5/
-  app/
-    app_bert.py                # Streamlit application
-  python/
-    __init__.py
-    snowflake_client.py        # Snowflake connector + run_query
-    logging_utils.py           # pipeline_logs.csv writer
-  sql/
-    01_views.sql               # WEATHER_ENRICHED, CITY_STATS, RECENT_CITY_WEATHER, V_WEATHER_WITH_CITY_STATS
-  diagrams/
-    architecture_week5.png     # Architecture diagram
-  pipeline_logs.csv            # Generated at runtime (committed with sample logs)
-  README.md
-  CONTRIBUTIONS.md
-  .env.example                 # Document required env vars (no secrets)
-```
-
-
-**Notes:**
-
-* `app_snowflake.py` → For **cloud deployment** inside Snowsight.
-* `app_local.py` → For **local Streamlit testing** and debugging.
-* `ingestion/` → Handles initial data ingestion from CSV or external sources into Snowflake.
+3. **AutoAgent: Multi-Agent Framework for Complex Reasoning**  
+   Li et al., 2023 — https://arxiv.org/abs/2309.17288  
+   Motivates agent-based orchestration and verification.
 
 ---
 
-## Features
+## Data Sources
+- **NOAA Global Historical Climate Network (GHCN)**  
+  https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily
+- **Kaggle Weather & Climate Datasets**  
+  https://www.kaggle.com/datasets
+- **IPCC Assessment Reports (AR5 / AR6)**  
+  https://www.ipcc.ch/reports/
+- **Hugging Face Climate & Weather Datasets**  
+  https://huggingface.co/datasets
 
-* **Dynamic Filtering:** Searchable dropdown populated with `NAME` values from `WEATHER_FULL`.
-* **Live Metrics:** Max/Min temperatures and Precipitation calculated in real time.
-* **Historical Trends:** Time-series charts using Streamlit and Plotly.
-* **Environment-Agnostic:** Single codebase supports both local and cloud workflows.
+These datasets support grounding, retrieval, fine-tuning, and evaluation.
 
 ---
 
-## Demo & Deployment
+## GenAI System Architecture & Pipeline
+1. **Data Ingestion & Knowledge Layer**
+   - Chunking of documents and tabular data
+   - Metadata tagging (location, date, variable)
+   - Versioning and provenance tracking
 
-* **Dashboard demo video:** (https://drive.google.com/file/d/1VK4R-Iro2UsWvcMJRorbFTdT3lqSHYHk/view?usp=drive_link)
-* **Cloud Snowflake dashboard (Snowsight):** [Open here](https://app.snowflake.com/sfedu02/dcb73175/#/streamlit-apps/WEATHER_TWIN_DB.PUBLIC.LMTE323F0FBAR_NK)
+2. **Retrieval, Generation & Fine-Tuning**
+   - Embeddings and vector search
+   - RAG pipeline with reranking and citations
+   - Optional LoRA / PEFT fine-tuning
+   - Multi-agent orchestration (retrieval, reasoning, verification)
+
+3. **Interface & Delivery**
+   - Flask API for model access
+   - Dashboard or chat-based interface
+   - Human-in-the-loop feedback
+   - Transparent citations and uncertainty reporting
+
+---
+
+## Methods, Technologies & Tools
+- **LLMs:** OpenAI GPT-4 / Hugging Face models  
+- **RAG Frameworks:** LangChain, LlamaIndex  
+- **Vector Search:** FAISS (local)  
+- **Fine-Tuning:** LoRA / PEFT  
+- **Interface & API:** Flask, Streamlit  
+- **Collaboration:** GitHub, documentation & version control  
+
+---
+
+## Evaluation & Trust Metrics
+- **Grounding & Hallucination Rate**
+- **Citation Accuracy**
+- **Task Success Rate**
+- **User Trust & Satisfaction**
+- **Latency & Cost**
+
+Baselines include LLM-only and RAG-without-fine-tuning systems.
+
+---
+
+## Expected Deliverables
+- Functional GenAI prototype
+- Interactive demo (dashboard or chat)
+- Fully versioned GitHub repository
+- Final technical report with evaluation results
+
+---
+
+## Phase 1: Project Initiation (Weeks 1–3)
+- Define GenAI workflow and system scope
+- Collect and curate datasets
+- Design RAG and fine-tuning strategy
+- Build initial ingestion and retrieval pipeline
+
+---
+
+## Members, Roles & Project Tasks
+
+### Harsha Sri Neeriganti
+**Roles:** Backend, AI agents, data pipelines, dashboard integration  
+**Tasks:**
+- Build RAG pipeline and data ingestion workflows  
+- Implement AI agents for personalized responses  
+- Develop Flask API  
+- Integrate backend with dashboard  
+- Assist in evaluation and final reporting  
+
+### Sayush Maharjan
+**Roles:** Frontend, dashboard interface, AI agent integration  
+**Tasks:**
+- Design and implement frontend interface  
+- Integrate Flask API for user interaction  
+- Connect AI agents to frontend  
+- Support evaluation and final documentation  
 
 

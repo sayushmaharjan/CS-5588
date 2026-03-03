@@ -1,7 +1,5 @@
 # app.py
-
 import os
-import sys
 import json
 import requests
 import streamlit as st
@@ -16,18 +14,7 @@ import torch
 
 from datetime import datetime, timedelta
 from huggingface_hub import login
-
-import streamlit as st
-import snowflake.connector
-
-
-
-# Ensure project root is on sys.path so "python" package is importable
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
-
-from python.snowflake_client import run_query
+from datasets import load_dataset
 
 # login(token=os.getenv("HF_TOKEN"))
 
@@ -95,139 +82,91 @@ def load_weather_model():
 # =========================
 @st.cache_data
 def load_weather_dataset():
-    sql = """
-        SELECT
-            CITY,
-            OBS_DATE AS obs_date,
-            TAVG     AS temperature,
-            AWND     AS wind_speed,
-            PRCP     AS precipitation,
-            CONDITION
-        FROM WEATHER_ENRICHED
     """
-    df, latency = run_query(sql, query_name="load_weather_dataset")
-    df.columns = [c.lower() for c in df.columns]
-    return df, latency
-
-# def load_weather_dataset():
-#     """
-#     Load historical weather dataset
-#     Dataset: https://huggingface.co/datasets/mongodb/weather
-#     Fallback to sample data if not available
-#     """
-#     try:
-#         from datasets import load_dataset
-#         # df1 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-5/data/los_angeles.csv")
-#         # df1["city"] = "Los Angeles"
-
-#         # df2 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-5/data/san_diego.csv")
-#         # df2["city"] = "San Diego"
-
-#         # df3 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-5/data/san_francisco.csv")
-#         # df3["city"] = "San Francisco"
-
-#         # df = pd.concat([df1, df2, df3], ignore_index=True)
-
-#         # in app.py
-        
-
-
-#         # df = load_dataset("sayush-m/us-weather-data", token=True)
-#         # ds = load_dataset("sayush-m/us-weather-data")
-
-#         # df = pd.DataFrame(ds["train"])
-
-
-
-#         # st.write("Columns in dataset:", df.columns)
-
-
-#         # Normalize column names
-#         # df.columns = df.columns.str.upper()
-
-#         # Create expected columns
-#         df["temperature"] = df["TAVG"]
-#         df["wind_speed"] = df["AWND"]
-#         df["precipitation"] = df["PRCP"]
-
-#         # Since we don't have condition, create simple rule-based condition
-#         df["condition"] = df.apply(
-#             lambda row: "Rainy" if row["PRCP"] > 0 else
-#                         "Snowy" if row["SNOW"] > 0 else
-#                         "Clear",
-#             axis=1
-#         )
-
-#         # Keep city lowercase-safe
-#         # df["city"] = df["city"].str.strip()
-
-#         # Drop rows with missing temperature
-#         df = df.dropna(subset=["temperature"])
-
-
-#         # Try loading from HuggingFace
-#         # dataset = load_dataset("mongodb/weather", split="train[:1000]")  # Limit to 1000 rows
-#         # df = pd.DataFrame(dataset)
-#         # st.success(f"✅ Loaded {len(df)} weather records from HuggingFace")
-#         return df
-#     except Exception as e:
-#         st.warning(f"⚠️ Could not load HuggingFace dataset: {e}")
-        
-#         # Fallback: Create comprehensive sample weather data
-#         import numpy as np
-        
-#         cities = ['New York', 'London', 'Tokyo', 'Paris', 'Sydney', 'Berlin', 
-#                   'Rome', 'Madrid', 'Beijing', 'Moscow', 'Dubai', 'Singapore']
-        
-#         conditions = ['Sunny', 'Partly Cloudy', 'Cloudy', 'Rainy', 'Stormy', 
-#                      'Snowy', 'Foggy', 'Windy']
-        
-#         # Generate realistic weather data
-#         n_records = 1000
-        
-#         sample_data = {
-#             'city': np.random.choice(cities, n_records),
-#             'temperature': np.random.normal(20, 10, n_records),  # Mean 20°C, std 10
-#             'humidity': np.random.uniform(30, 90, n_records),
-#             'wind_speed': np.random.uniform(5, 40, n_records),
-#             'pressure': np.random.normal(1013, 20, n_records),
-#             'condition': np.random.choice(conditions, n_records),
-#             'date': pd.date_range('2023-01-01', periods=n_records, freq='6H')
-#         }
-        
-#         df = pd.DataFrame(sample_data)
-#         st.info(f"ℹ️ Using sample dataset with {len(df)} records")
-#         return df
-
-
-@st.cache_data(show_spinner=False)
-def load_city_stats():
-    sql = "SELECT * FROM CITY_STATS"
-    return run_query(sql, query_name="load_city_stats")
-
-
-@st.cache_data(show_spinner=False)
-def load_joined_sample(limit: int = 100):
-    sql = f"""
-        SELECT *
-        FROM V_WEATHER_WITH_CITY_STATS
-        LIMIT {limit}
+    Load historical weather dataset
+    Dataset: https://huggingface.co/datasets/mongodb/weather
+    Fallback to sample data if not available
     """
-    return run_query(sql, query_name="load_joined_sample")
+    try:
+        df1 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-4/data/los_angeles.csv")
+        df1["city"] = "Los Angeles"
+
+        df2 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-4/data/san_diego.csv")
+        df2["city"] = "San Diego"
+
+        df3 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-4/data/san_francisco.csv")
+        df3["city"] = "San Francisco"
+
+        df = pd.concat([df1, df2, df3], ignore_index=True)
 
 
-@st.cache_data(show_spinner=False)
-def load_recent_city_weather(city: str, days: int = 30):
-    city_escaped = city.replace("'", "''")
-    sql = f"""
-        SELECT *
-        FROM RECENT_CITY_WEATHER
-        WHERE CITY = '{city_escaped}'
-        ORDER BY OBS_DATE DESC
-    """
-    return run_query(sql, query_name=f"recent_weather_{city_escaped}")
+
+        # df = load_dataset("sayush-m/us-weather-data", token=True)
+        # ds = load_dataset("sayush-m/us-weather-data")
+
+        # df = pd.DataFrame(ds["train"])
 
 
+
+        # st.write("Columns in dataset:", df.columns)
+
+
+        # Normalize column names
+        # df.columns = df.columns.str.upper()
+
+        # Create expected columns
+        df["temperature"] = df["TAVG"]
+        df["wind_speed"] = df["AWND"]
+        df["precipitation"] = df["PRCP"]
+
+        # Since we don't have condition, create simple rule-based condition
+        df["condition"] = df.apply(
+            lambda row: "Rainy" if row["PRCP"] > 0 else
+                        "Snowy" if row["SNOW"] > 0 else
+                        "Clear",
+            axis=1
+        )
+
+        # Keep city lowercase-safe
+        # df["city"] = df["city"].str.strip()
+
+        # Drop rows with missing temperature
+        df = df.dropna(subset=["temperature"])
+
+
+        # Try loading from HuggingFace
+        # dataset = load_dataset("mongodb/weather", split="train[:1000]")  # Limit to 1000 rows
+        # df = pd.DataFrame(dataset)
+        # st.success(f"✅ Loaded {len(df)} weather records from HuggingFace")
+        return df
+    except Exception as e:
+        st.warning(f"⚠️ Could not load HuggingFace dataset: {e}")
+        
+        # Fallback: Create comprehensive sample weather data
+        import numpy as np
+        
+        cities = ['New York', 'London', 'Tokyo', 'Paris', 'Sydney', 'Berlin', 
+                  'Rome', 'Madrid', 'Beijing', 'Moscow', 'Dubai', 'Singapore']
+        
+        conditions = ['Sunny', 'Partly Cloudy', 'Cloudy', 'Rainy', 'Stormy', 
+                     'Snowy', 'Foggy', 'Windy']
+        
+        # Generate realistic weather data
+        n_records = 1000
+        
+        sample_data = {
+            'city': np.random.choice(cities, n_records),
+            'temperature': np.random.normal(20, 10, n_records),  # Mean 20°C, std 10
+            'humidity': np.random.uniform(30, 90, n_records),
+            'wind_speed': np.random.uniform(5, 40, n_records),
+            'pressure': np.random.normal(1013, 20, n_records),
+            'condition': np.random.choice(conditions, n_records),
+            'date': pd.date_range('2023-01-01', periods=n_records, freq='6H')
+        }
+        
+        df = pd.DataFrame(sample_data)
+        st.info(f"ℹ️ Using sample dataset with {len(df)} records")
+        return df
 
 # =========================
 # WEATHER KNOWLEDGE BASE
@@ -563,13 +502,9 @@ st.set_page_config(page_title="Weather + AI Dashboard", layout="wide")
 st.title("🌦 Weather + AI Dashboard with BERT Forecasting")
 
 # Load BERT model and dataset
-# with st.spinner("🔄 Loading AI model and weather dataset..."):
-#     classifier= load_weather_model() #, tokenizer, model 
-#     weather_df = load_weather_dataset()
-
 with st.spinner("🔄 Loading AI model and weather dataset..."):
-    classifier = load_weather_model()
-    weather_df, dataset_latency = load_weather_dataset()
+    classifier= load_weather_model() #, tokenizer, model 
+    weather_df = load_weather_dataset()
 
 col1, col2 = st.columns([3, 2])
 
@@ -641,9 +576,9 @@ with col1:
             with m8:
                 st.metric(label="🌇 Sunset", value=cur['sunset'])
         
-        # =============================
-        # SECTION 2: PLOTLY CHART
-        # =============================
+        # # =============================
+        # # SECTION 2: PLOTLY CHART
+        # # =============================
         # with st.container(border=True):
         #     st.subheader("📊 24-Hour Forecast")
             
@@ -722,7 +657,6 @@ with col1:
         #             hovermode='x unified'
         #         )
         #         st.plotly_chart(fig_hum, use_container_width=True)
-       
         # =============================
         # SECTION 2: PLOTLY ICON TIMELINE
         # =============================
@@ -929,26 +863,6 @@ with col2:
                 st.rerun()
         else:
             st.info("ℹ️ No logs yet.")
-    
-    with st.container(border=True):
-        st.subheader("📈 Backend Monitoring (Snowflake Queries)")
-        import os
-
-        if os.path.exists("pipeline_logs.csv"):
-            logs_df = pd.read_csv("pipeline_logs.csv")
-            st.metric("Total logged queries", len(logs_df))
-            st.dataframe(logs_df.tail(20), use_container_width=True)
-
-            try:
-                logs_df["timestamp"] = pd.to_datetime(logs_df["timestamp"])
-                logs_df = logs_df.sort_values("timestamp")
-                logs_df.set_index("timestamp", inplace=True)
-                st.line_chart(logs_df["latency_sec"], height=200)
-            except Exception:
-                pass
-        else:
-            st.info("No Snowflake pipeline logs yet. Trigger some queries first.")
-        
 
 # Footer
 st.divider()
