@@ -155,4 +155,88 @@ Baselines include LLM-only and RAG-without-fine-tuning systems.
 - Connect AI agents to frontend  
 - Support evaluation and final documentation  
 
+---
+
+## Week 6 — AI Agent Integration
+
+### Agent Architecture
+
+WeatherTwin now includes a modular AI agent layer that transforms the dashboard into an intelligent decision-support system. The agent follows the **ReAct (Reason + Act)** pattern:
+
+1. **User Query** → Interpreted by Llama 3.3 70B (via Groq API)
+2. **Tool Selection** → Agent picks from 5 available tools based on JSON schemas
+3. **Execution** → Tool functions call WeatherAPI, parse CSV data, or run BERT inference
+4. **Observation** → Results feed back to the LLM for further reasoning or final answer
+5. **Response** → Grounded answer with visible reasoning trace in the UI
+
+### Agent Tools
+
+| Tool | Description | Data Source |
+|------|-------------|-------------|
+| `get_current_weather` | Real-time weather conditions for any city | WeatherAPI (live) |
+| `get_weather_forecast` | Hourly forecast for the next N hours | WeatherAPI (forecast) |
+| `get_historical_analysis` | Statistical summary from historical data | CSV dataset |
+| `predict_weather_bert` | BERT-based weather condition prediction | BERT model + CSV |
+| `compare_cities` | Side-by-side comparison of two cities | WeatherAPI (comparison) |
+
+### Project Structure
+
+```
+week-6_WeatherTwin_Antigravity_Integration/
+├── agent/                       # NEW — Agent module
+│   ├── __init__.py
+│   ├── tools.py                 # 5 callable tool functions
+│   ├── tool_schemas.py          # JSON schemas for LLM tool selection
+│   └── agent_runner.py          # ReAct agent loop
+├── app/
+│   ├── app_map.py               # Main Streamlit dashboard (updated)
+│   ├── app_auth.py              # Authentication module
+│   └── app_bert.py              # BERT integration (reference)
+├── auth/
+│   └── users.csv                # User credentials
+├── data/
+│   ├── los_angeles.csv          # Historical weather data
+│   ├── san_diego.csv
+│   └── san_francisco.csv
+├── task1_antigravity_report.md  # Antigravity IDE usage report
+├── task4_evaluation_report.md   # Evaluation scenarios & analysis
+├── requirements.txt
+└── README.md
+```
+
+### Setup Instructions
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd week-6_WeatherTwin_Antigravity_Integration
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   pip install folium streamlit-folium
+   ```
+
+3. **Create a `.env` file** in the project root with the following keys:
+   ```env
+   GROQ_API_KEY=your_groq_api_key
+   WEATHERAPI_KEY=your_weatherapi_key
+   OPENWEATHER_API_KEY=your_openweathermap_key
+   ```
+
+4. **Run the application:**
+   ```bash
+   cd app
+   streamlit run app_map.py
+   ```
+
+5. **Using the agent:**
+   - Select **Live Weather** mode in the chat panel to use the full agent with all 5 tools
+   - Select **BERT Forecast** mode for direct BERT predictions (falls back to agent if BERT can't handle the query)
+   - Click the **🔍 Agent Trace** expander under any AI response to see the reasoning steps
+
+### Demo Video
+
+> https://drive.google.com/file/d/1ZIxZJZBqhN9NKkUsSSOrXI8CdceK8EMX/view?usp=sharing
 

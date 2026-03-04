@@ -1,0 +1,48 @@
+timestamp,role,content,city
+2026-03-03 18:01:09,user,What's the weather in Los Angeles?,New York
+============================================================
+Timestamp   : 2026-03-03 18:01:10
+Source      : BERT
+User Query  : What's the weather in Los Angeles?
+Bot Response: 
+🔮 **Weather Forecast for Los Angeles** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** POSITIVE
+- **Confidence:** 65.2%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 67.9°C
+- **Temperature Range:** 58.0°C to 77.6°C
+
+- **Average Wind Speed:** nan km/h
+- **Most Common Condition:** Clear
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **POSITIVE** 
+with 65.2% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+
+============================================================
+
+2026-03-03 18:01:10,assistant,"
+🔮 **Weather Forecast for Los Angeles** (AI-Powered Prediction)
+
+🤖 **BERT Model Prediction:** 
+- **Condition:** POSITIVE
+- **Confidence:** 65.2%
+
+📊 **Statistical Analysis** (Based on 20 recent records):
+- **Average Temperature:** 67.9°C
+- **Temperature Range:** 58.0°C to 77.6°C
+
+- **Average Wind Speed:** nan km/h
+- **Most Common Condition:** Clear
+
+🎯 **Forecast Summary:**
+Expect weather conditions similar to recent patterns. The AI model predicts **POSITIVE** 
+with 65.2% confidence based on historical data analysis.
+
+⚠️ *This prediction is based on historical patterns and AI classification.*
+",New York

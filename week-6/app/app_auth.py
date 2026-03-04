@@ -13,7 +13,7 @@ from email.message import EmailMessage
 # -------------------------
 load_dotenv()
 
-USERS_FILE = "auth/users.csv"
+USERS_FILE = os.path.join(os.path.dirname(__file__), "..", "auth", "users.csv")
 
 # -------------------------
 # Initialize users.csv

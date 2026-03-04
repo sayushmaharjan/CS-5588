@@ -1,5 +1,6 @@
 # app.py
 import os
+import sys
 import json
 import requests
 import streamlit as st
@@ -19,6 +20,10 @@ from streamlit_folium import st_folium
 from folium import plugins
 import streamlit.components.v1 as components
 import time
+
+# ── Agent module import ──
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from agent.agent_runner import AgentRunner
 
 
 DEV_MODE = True
@@ -84,7 +89,8 @@ client = OpenAI(
 )
 
 MODEL = "llama-3.3-70b-versatile"
-LOG_FILE = "chat_log.csv"
+_PROJECT_ROOT = os.path.join(os.path.dirname(__file__), "..")
+LOG_FILE = os.path.join(_PROJECT_ROOT, "chat_log.csv")
 
 # =========================
 # BERT MODEL SETUP
@@ -131,16 +137,18 @@ def load_weather_dataset():
     Fallback to sample data if not available
     """
     try:
-        df1 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-4/data/los_angeles.csv")
+        _data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        df1 = pd.read_csv(os.path.join(_data_dir, "los_angeles.csv"))
         df1["city"] = "Los Angeles"
 
-        df2 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-4/data/san_diego.csv")
+        df2 = pd.read_csv(os.path.join(_data_dir, "san_diego.csv"))
         df2["city"] = "San Diego"
 
-        df3 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-4/data/san_francisco.csv")
+        df3 = pd.read_csv(os.path.join(_data_dir, "san_francisco.csv"))
         df3["city"] = "San Francisco"
 
         df = pd.concat([df1, df2, df3], ignore_index=True)
+
 
         # from datasets import load_dataset
         # Create expected columns
@@ -550,7 +558,7 @@ def log_query(user_input: str, bot_response: str, weather_data: str = None, sour
 # =========================
 # CHAT HISTORY CSV
 # =========================
-CHAT_CSV = "chat_log.csv"
+CHAT_CSV = os.path.join(_PROJECT_ROOT, "chat_log.csv")
 
 def save_chat_to_csv(role: str, content: str, city: str = ""):
     """Append a chat message to CSV file"""
@@ -1078,7 +1086,7 @@ def chat_section():
                             st.session_state.all_plans.append(m)
                     if os.path.exists(CHAT_CSV) and os.path.getsize(CHAT_CSV) > 0:
                         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-                        archive_name = f"chat_log_{ts}.csv"
+                        archive_name = os.path.join(_PROJECT_ROOT, f"chat_log_{ts}.csv")
                         os.rename(CHAT_CSV, archive_name)
                     st.session_state.chat_history = []
                     st.rerun()
@@ -1108,6 +1116,24 @@ def chat_section():
                     else:
                         st.markdown(f'<div class="chat-ai"><div class="chat-role">WeatherTwin AI</div>{msg["content"]}</div>',
                                     unsafe_allow_html=True)
+                        # Show agent reasoning trace if available
+                        agent_steps = msg.get("agent_steps", [])
+                        agent_tools = msg.get("tools_used", [])
+                        if agent_steps:
+                            with st.expander(f"🔍 Agent Trace — {len(agent_steps)} step(s), tools: {', '.join(agent_tools) if agent_tools else 'none'}"):
+                                for s in agent_steps:
+                                    st.markdown(f"**Step {s['step']}** — `{s['action']}`")
+                                    if s.get('thought'):
+                                        st.caption(f"💭 {s['thought']}")
+                                    if s.get('action_input') and s['action'] != 'final_answer':
+                                        st.code(json.dumps(s['action_input'], indent=2), language='json')
+                                    if s.get('observation'):
+                                        obs = s['observation']
+                                        if isinstance(obs, dict):
+                                            st.json(obs)
+                                        else:
+                                            st.text(str(obs)[:500])
+                                    st.divider()
                 # Anchor at the bottom
                 st.markdown('<div id="chat-bottom-anchor"></div>', unsafe_allow_html=True)
 
@@ -1167,22 +1193,38 @@ def chat_section():
             st.session_state.chat_history.append({"role": "user", "content": final_input, "city": st.session_state.map_city})
             save_chat_to_csv("user", final_input, st.session_state.map_city)
 
-            with st.spinner("Analyzing weather data..."):
-                if "BERT" in query_mode:
-                    if classifier:
-                        prediction, error = predict_weather_with_bert(final_input, weather_df, classifier)
-                        if prediction:
-                            response = prediction
-                            log_query(final_input, prediction, source="BERT")
-                        else:
-                            response = run_agent(final_input)
+            with st.spinner("🤖 Agent is reasoning..."):
+                if "BERT" in query_mode and classifier:
+                    prediction, error = predict_weather_with_bert(final_input, weather_df, classifier)
+                    if prediction:
+                        response_text = prediction
+                        agent_steps = []
+                        agent_tools = ["predict_weather_bert (direct)"]
+                        log_query(final_input, prediction, source="BERT")
                     else:
-                        response = run_agent(final_input)
+                        # Fall through to agent
+                        agent = AgentRunner()
+                        result = agent.run(final_input)
+                        response_text = result["answer"]
+                        agent_steps = result["steps"]
+                        agent_tools = result["tools_used"]
+                        log_query(final_input, response_text, source="Agent")
                 else:
-                    response = run_agent(final_input)
+                    agent = AgentRunner()
+                    result = agent.run(final_input)
+                    response_text = result["answer"]
+                    agent_steps = result["steps"]
+                    agent_tools = result["tools_used"]
+                    log_query(final_input, response_text, source="Agent")
 
-            st.session_state.chat_history.append({"role": "assistant", "content": response, "city": st.session_state.map_city})
-            save_chat_to_csv("assistant", response, st.session_state.map_city)
+            st.session_state.chat_history.append({
+                "role": "assistant",
+                "content": response_text,
+                "city": st.session_state.map_city,
+                "agent_steps": agent_steps,
+                "tools_used": agent_tools,
+            })
+            save_chat_to_csv("assistant", response_text, st.session_state.map_city)
             st.rerun(scope="fragment")
 
 with left_pane:
@@ -1240,7 +1282,7 @@ with right_pane:
                     os.remove(LOG_FILE)
                 # Also remove archived logs
                 import glob
-                for f in glob.glob("chat_log_*.csv"):
+                for f in glob.glob(os.path.join(_PROJECT_ROOT, "chat_log_*.csv")):
                     os.remove(f)
                 st.rerun()
         else:
