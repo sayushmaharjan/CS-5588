@@ -137,14 +137,13 @@ def load_weather_dataset():
     Fallback to sample data if not available
     """
     try:
-        _data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-        df1 = pd.read_csv(os.path.join(_data_dir, "los_angeles.csv"))
+        df1 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-4/data/los_angeles.csv")
         df1["city"] = "Los Angeles"
 
-        df2 = pd.read_csv(os.path.join(_data_dir, "san_diego.csv"))
+        df2 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-4/data/san_diego.csv")
         df2["city"] = "San Diego"
 
-        df3 = pd.read_csv(os.path.join(_data_dir, "san_francisco.csv"))
+        df3 = pd.read_csv("/Users/sayush/Documents/cs5588/CS-5588/week-4/data/san_francisco.csv")
         df3["city"] = "San Francisco"
 
         df = pd.concat([df1, df2, df3], ignore_index=True)
