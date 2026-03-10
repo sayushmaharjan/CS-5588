@@ -8,4 +8,4 @@ I also analyzed how the project's LLM-weather pattern relates to WeatherTwin, no
 
 ## Reflection
 
-This exercise showed how critical **good documentation** is for reproducibility — unlike CLIMADA, this project required significant reverse-engineering. The Gemini deprecation reinforced the need for a **provider-agnostic LLM layer** in WeatherTwin, a pattern I validated by successfully swapping APIs. Seeing the Health Navigator's limitations — no historical context, no source attribution — **confirmed that WeatherTwin's RAG-based design with FAISS retrieval and citation tracking is the right approach**.
+This exercise showed how critical good documentation is for reproducibility — unlike CLIMADA, this project required significant reverse-engineering. The Gemini deprecation reinforced the need for a provider-agnostic LLM layer in WeatherTwin, a pattern I validated by successfully swapping APIs. Seeing the Health Navigator's limitations — no historical context, no source attribution — confirmed that WeatherTwin's RAG-based design with FAISS retrieval and citation tracking is the right approach.
