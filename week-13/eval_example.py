@@ -5,8 +5,8 @@ from evaluation import evaluate_single, _simplified_ssim
 
 def main():
     # 1. Provide the paths to your reference image and the newly generated image
-    reference_path = "/Users/sayush/Documents/cs5588/CS-5588/week-11/test_images/m2.jpg"
-    generated_path = "/Users/sayush/Documents/cs5588/CS-5588/week-11/output_images/recon/output_inpaint_man3.png"
+    reference_path = "/Users/sayush/Documents/cs5588/CS-5588/week-13/test_images/m2.jpg"
+    generated_path = "/Users/sayush/Documents/cs5588/CS-5588/week-13/output_images/recon/output_inpaint_man_old.png"
 
     # You can paste the exact prompt that was printed out during run_example.py
     # This is needed to calculate the CLIP Score (Prompt Alignment)

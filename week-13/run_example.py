@@ -11,7 +11,7 @@ def main():
     
     # 2. Provide a reference image
     # Note: Replace 'reference_photo.jpg' with the path to your actual image
-    image_path = "/Users/sayush/Documents/cs5588/CS-5588/week-11/test_images/m2.jpg"
+    image_path = "/Users/sayush/Documents/cs5588/CS-5588/week-13/test_images/m2.jpg"
     
     if not os.path.exists(image_path):
         # Create a dummy image just for demonstration if one doesn't exist
@@ -39,15 +39,15 @@ def main():
         color_palette="navy blue and gold accents",
         seed=42,
         strength=0.95,
-        # num_images=1,
+        num_images=1,
     )
-    result["images"][0].save("/Users/sayush/Documents/cs5588/CS-5588/week-11/output_images/recon/output_inpaint_man3.png")
-    result["mask"].save("/Users/sayush/Documents/cs5588/CS-5588/week-11/output_images/mask/mask_m3.png")  # verify mask looks right
+    result["images"][0].save("/Users/sayush/Documents/cs5588/CS-5588/week-13/output_images/recon/output_inpaint_man_old.png")
+    result["mask"].save("/Users/sayush/Documents/cs5588/CS-5588/week-13/output_images/mask/mask_m3_old.png")  # verify mask looks right
     
     # 4. Save the results
     print("Generation complete! Saving images...")
     for i, img in enumerate(result["images"]):
-        output_filename = f"/Users/sayush/Documents/cs5588/CS-5588/week-11/output_images/variation/output_variation_{i+1}.png"
+        output_filename = f"/Users/sayush/Documents/cs5588/CS-5588/week-13/output_images/variation/output_variation_{i+1}.png"
         img.save(output_filename)
         print(f"Saved {output_filename}")
         
