@@ -681,10 +681,12 @@ To evaluate the pipeline's capabilities, we contrast standard fallback methods a
 📊 EVALUATION RESULTS
 ----------------------------------------
 
-Transcription Quality : Excellent
-Latency (ASR)         : 7.63s
-Accuracy              : 100.00%
-WER (Word Error Rate) : 0.00% (0 errors / 24 words)
+• Transcription Quality : Excellent
+• Latency (ASR)         : 13.21s
+• Accuracy              : 100.00%
+• WER (Word Error Rate) : 0.00% (0 errors / 24 words)
+• Voice Consistency     : 0.897 SIM-R (Target: >0.85)
+• Prompt Align. (CLAP)  : 0.545 Score (Target: >0.45)
 
 ---
 
@@ -700,7 +702,7 @@ WER (Word Error Rate) : 0.00% (0 errors / 24 words)
 
 ```bash
 # Clone / download project
-cd cinematic_memory
+cd week-14
 
 # Install dependencies
 pip install -r requirements.txt
