@@ -1,0 +1,50 @@
+# Cinematic Memory — Dependencies
+# Install: pip install -r requirements.txt
+
+# ── UI ─────────────────────────────────────────────────────────────────
+streamlit>=1.32.0
+altair>=5.0.0
+
+# ── ML Frameworks ──────────────────────────────────────────────────────
+torch>=2.1.0
+torchaudio>=2.1.0
+torchvision>=0.16.0
+transformers>=4.40.0
+datasets>=2.19.0
+diffusers>=0.28.0
+accelerate>=0.29.0
+
+# ── Visual Understanding ────────────────────────────────────────────────
+Pillow>=10.0.0
+open-clip-torch>=2.24.0      # alternative CLIP backend
+opencv-python-headless>=4.9.0
+
+# ── Audio Understanding ─────────────────────────────────────────────────
+openai-whisper>=20231117     # CLI whisper (alternative)
+librosa>=0.10.0
+soundfile>=0.12.0
+scipy>=1.12.0
+
+# ── Narrative Engine ────────────────────────────────────────────────────
+anthropic>=0.28.0            # Claude API for narrative generation
+groq>=0.4.0                  # Groq API for fast LLM inference
+
+# ── Voice Synthesis ────────────────────────────────────────────────────
+chatterbox-tts               # Resemble AI SoTA open-source TTS
+
+# ── Video Assembly ──────────────────────────────────────────────────────
+moviepy>=1.0.3
+imageio>=2.34.0
+imageio-ffmpeg>=0.4.9
+
+# ── Data handling ───────────────────────────────────────────────────────
+pandas>=2.0.0
+numpy>=1.26.0
+
+# ── Audio LDM2 ─────────────────────────────────────────────────────────
+# AudioLDM2 included via diffusers>=0.28.0
+# No separate install needed
+
+# ── Optional: faster inference ─────────────────────────────────────────
+# xformers>=0.0.26           # GPU memory optimization (optional)
+# bitsandbytes>=0.43.0       # 8-bit quantization (optional)

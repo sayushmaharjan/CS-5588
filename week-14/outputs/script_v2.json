@@ -1,0 +1,46 @@
+{
+  "title": "Echoes of Wonder",
+  "total_duration_s": 15,
+  "arc_summary": "A fleeting glimpse into the magic of discovery, where curiosity and joy entwine. As we delve into the unknown, our senses come alive, and the world unfolds its secrets. In this moment, we find ourselves lost in the beauty of exploration.",
+  "beats": [
+    {
+      "beat_id": "beat_001",
+      "act_phase": "setup",
+      "narration_text": "As we step into the unknown, the world awakens with an air of mystery, and our hearts beat with anticipation. The path unwinds before us, a gentle whisper of promise, like the first light of dawn creeping over the horizon.",
+      "media_ids": [
+        "test_001"
+      ],
+      "emotion": "excited",
+      "duration_hint_s": 5.0,
+      "cut_speed": "slow",
+      "music_prompt": "Soft, pulsing piano melody with a hint of orchestral strings",
+      "ambient_prompt": "Distant morning birdsong with a gentle breeze"
+    },
+    {
+      "beat_id": "beat_002",
+      "act_phase": "peak",
+      "narration_text": "And then, it happens - the spark of discovery that sets our souls aglow. The world bursts into color, and every sense comes alive, as if the universe itself is celebrating our curiosity. In this moment, we are infinite, our spirits soaring on the wings of wonder.",
+      "media_ids": [
+        "test_002"
+      ],
+      "emotion": "joyful",
+      "duration_hint_s": 5.0,
+      "cut_speed": "medium",
+      "music_prompt": "Vibrant, uplifting melody with a mix of acoustic guitar and celestial synths",
+      "ambient_prompt": "Soft, joyful laughter with a hint of a bustling crowd"
+    },
+    {
+      "beat_id": "beat_003",
+      "act_phase": "reflection",
+      "narration_text": "As the moment fades, leaving us with the gentle glow of memory, we realize that the true magic was not in the discovery itself, but in the journey - the laughter, the tears, the moments of pure, unadulterated joy. And so, we carry this sense of wonder with us, a beacon of light that guides us through life's twists and turns.",
+      "media_ids": [
+        "test_003"
+      ],
+      "emotion": "celebratory",
+      "duration_hint_s": 5.0,
+      "cut_speed": "slow",
+      "music_prompt": "Warm, nostalgic melody with a solo piano and a touch of strings",
+      "ambient_prompt": "Soft, crackling fireplace with a hint of evening silence"
+    }
+  ]
+}

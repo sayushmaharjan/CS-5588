@@ -1,0 +1,49 @@
+{
+  "title": "Echoes of a Moment",
+  "total_duration_s": 15,
+  "arc_summary": "A reflective journey through the fragments of a test event, where memories and emotions intertwine. As we wander through the scenes, the past and present converge, inviting us to cherish the beauty in the everyday. In this fleeting glimpse, we find the essence of our shared human experience.",
+  "beats": [
+    {
+      "beat_id": "beat_001",
+      "act_phase": "setup",
+      "narration_text": "As I step into this moment, the air is filled with the soft hum of uncertainty, like the gentle whisper of a summer breeze. The world around me is a canvas of muted colors, waiting for the brushstrokes of experience to bring it to life. I breathe in, and the scent of possibility wafts through my senses, carrying the promise of discovery.",
+      "media_ids": [
+        "photo_1",
+        "video_1"
+      ],
+      "emotion": "reflective",
+      "duration_hint_s": 5.0,
+      "cut_speed": "slow",
+      "music_prompt": "Piano notes falling like raindrops on a still pond",
+      "ambient_prompt": "Distant chatter, faint rustling of leaves"
+    },
+    {
+      "beat_id": "beat_002",
+      "act_phase": "peak",
+      "narration_text": "And then, like a whispered secret, the moment unfolds. The colors deepen, the sounds clarify, and the world comes alive. I feel the warmth of connection, the spark of curiosity, as the fragments of this test event begin to coalesce into a narrative. The rhythm of footsteps, the rustle of papers, and the soft murmur of voices all blend together in a symphony of human experience.",
+      "media_ids": [
+        "photo_2",
+        "video_2"
+      ],
+      "emotion": "nostalgic",
+      "duration_hint_s": 5.0,
+      "cut_speed": "medium",
+      "music_prompt": "Gentle guitar melody, weaving in and out of the silence",
+      "ambient_prompt": "Soft creaking of wooden floorboards, muffled laughter"
+    },
+    {
+      "beat_id": "beat_003",
+      "act_phase": "reflection",
+      "narration_text": "As the moment fades, like the dying embers of a fire, I'm left with the gentle glow of remembrance. The world slows down, and I'm able to see the intricate web of connections that binds us all together. In this quiet reflection, I find the beauty of the everyday, the beauty of our shared humanity. And as I breathe out, the scent of memory lingers, a reminder of the fleeting yet eternal nature of our experiences.",
+      "media_ids": [
+        "photo_3",
+        "video_3"
+      ],
+      "emotion": "reflective",
+      "duration_hint_s": 5.0,
+      "cut_speed": "slow",
+      "music_prompt": "Solo violin, a lament for the passing of time",
+      "ambient_prompt": "Crickets chirping, distant wind whispering through trees"
+    }
+  ]
+}

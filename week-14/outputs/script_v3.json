@@ -1,0 +1,46 @@
+{
+  "title": "Into the Unknown",
+  "total_duration_s": 15,
+  "arc_summary": "Embarking on a journey of discovery, we find ourselves at the threshold of a new experience, filled with curiosity and a sense of adventure. As we delve deeper, the path unfolds, revealing moments of joy and intensity. Reflecting on the journey, we find meaning and a sense of gratitude. The unknown becomes a catalyst for growth and self-discovery.",
+  "beats": [
+    {
+      "beat_id": "beat_001",
+      "act_phase": "setup",
+      "narration_text": "As I stand here, the world stretches out before me like an endless canvas, waiting to be explored. The thrill of the unknown beckons, a siren's call to adventure. I take my first step, and the journey begins.",
+      "media_ids": [
+        "event_type_test"
+      ],
+      "emotion": "excited",
+      "duration_hint_s": 5.0,
+      "cut_speed": "medium",
+      "music_prompt": "Ethereal ambient synth, soft percussion, and a hint of mystery",
+      "ambient_prompt": "Distant wind whispers, gentle footsteps on a winding path"
+    },
+    {
+      "beat_id": "beat_002",
+      "act_phase": "peak",
+      "narration_text": "As I wander, the landscape shifts and morphs, a kaleidoscope of colors and textures. Every step reveals a new wonder, a hidden treasure waiting to be uncovered. The world is alive, and I am a part of it, connected to every leaf and every branch.",
+      "media_ids": [
+        "event_type_test"
+      ],
+      "emotion": "joyful",
+      "duration_hint_s": 5.0,
+      "cut_speed": "fast",
+      "music_prompt": "Vibrant, pulsing electronic beat, soaring strings, and an sense of freedom",
+      "ambient_prompt": "Birdsong, rustling leaves, and the gentle babble of a brook"
+    },
+    {
+      "beat_id": "beat_003",
+      "act_phase": "reflection",
+      "narration_text": "And as I look back, the journey becomes a tapestry of memories, each thread woven into the fabric of my being. The unknown has become known, and yet, it remains a mystery, a reminder that there is always more to discover, more to explore. The adventure may be over, but the journey continues, a path that unwinds into the horizon.",
+      "media_ids": [
+        "event_type_test"
+      ],
+      "emotion": "nostalgic",
+      "duration_hint_s": 5.0,
+      "cut_speed": "slow",
+      "music_prompt": "Soft, melancholic piano, a hint of longing, and a sense of closure",
+      "ambient_prompt": "Fading light, distant whispers, and the soft creaking of trees"
+    }
+  ]
+}
