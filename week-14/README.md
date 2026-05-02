@@ -1,4 +1,4 @@
-# Narrate.AI 🎬 (formerly Cinematic Memory)
+# Narrate.AI 🎬
 
 > *Transform unstructured personal media (photos, videos, voice memos) into a cinematic documentary-style video with a coherent narrative, emotional arc, AI-generated narration, adaptive music, and ambient soundscapes.*
 
