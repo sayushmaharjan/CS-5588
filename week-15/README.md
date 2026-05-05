@@ -1,4 +1,4 @@
-# AI Children's Story Creator
+# Story Weaver: AI Children's Story Creator
 
 A production-ready, end-to-end AI pipeline that transforms a **child's name, age, and story theme** into a fully narrated storybook — with LLM-generated story text, Stable Diffusion illustrations, Chatterbox TTS narration, AI ambient music, a multi-page PDF, and a narrated MP4 video.
 
