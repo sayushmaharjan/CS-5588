@@ -231,13 +231,13 @@ The suite measures **4 dimensions** of quality:
 ============================================================
   EVALUATION RESULTS SUMMARY
 ============================================================
-  Metric                               Value
+  Metric                                   Value
   ---------------------------------------------
-  LLM Story Generation Latency          2.3s
-  Avg TTS (Narration) Latency/page     18.4s
-  Average WER                          12.5%
-  Average TTS Accuracy                 87.5%
-  Story Quality Score                    8/10
+  LLM Story Generation Latency              1.3s
+  Avg TTS (Narration) Latency/page         66.4s
+  Average WER                              1.0%
+  Average TTS Accuracy                     99.0%
+  Story Quality Score                       10/10
 ============================================================
 ```
 
@@ -248,7 +248,6 @@ Results are also saved to `outputs/evaluation_report.json`.
 ## Key Features
 
 - **LLM story generation** via Groq, Anthropic Claude, HuggingFace, or any OpenAI-compatible API
-- **Multilingual Support** — generate stories in any language (English, Spanish, French, etc.) via a simple prompt flag
 - **Stable Diffusion illustrations** with children's-book style prefix and seed locking for reproducibility
 - **Chatterbox TTS narration** with optional voice cloning from a 10–30s reference WAV
 - **AI ambient music** via MusicGen, mood-matched to the story's emotional arc
