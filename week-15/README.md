@@ -93,7 +93,7 @@ outputs/
 
 ```bash
 cd week-15
-conda activate fashion_gen   # or your environment
+conda activate my_env   # or your environment
 pip install -r requirements.txt
 ```
 
@@ -131,12 +131,6 @@ python storybook_generator/app.py
 python storybook_generator/cli.py \
     --name Lily --age 5 \
     --theme "a little dragon who learns to share"
-
-# Specify a different language
-python storybook_generator/cli.py \
-    --theme "a brave knight" \
-    --language Spanish \
-    --pages 4
 
 # With voice cloning
 python storybook_generator/cli.py \
