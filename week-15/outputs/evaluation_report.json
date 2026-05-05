@@ -1,0 +1,63 @@
+{
+  "config": {
+    "child_name": "Lily",
+    "age": 5,
+    "theme": "a little dragon who learns to share",
+    "num_pages": 2
+  },
+  "latency": {
+    "llm_story_generation_s": 1.3,
+    "tts_per_page_s": [
+      93.31,
+      39.51
+    ],
+    "tts_avg_s": 66.41
+  },
+  "wer_per_page": [
+    {
+      "page": 1,
+      "reference": "Lily lived in a cozy little village surrounded by a forest, where she loved to explore and play. One day, while wandering through the woods, she stumbled upon a hidden cave. Inside, she found a little dragon, no bigger than her hand, and its scales sparkled like diamonds in the soft moonlight.",
+      "hypothesis": "Lily lived in a cozy little village surrounded by a forest where she loved to explore and play. One day, while wandering through the woods, she stumbled upon a hidden cave. Inside, she found a little dragon, no bigger than her hand, and its scale sparkled like diamonds in the soft moonlight.",
+      "wer": 0.0192,
+      "accuracy": 98.08,
+      "insertions": 0,
+      "deletions": 0,
+      "substitutions": 1,
+      "alignment": "=== SENTENCE 1 ===\n\nREF: lily lived in a cozy little village surrounded by a forest where she loved to explore and play one day while wandering through the woods she stumbled upon a hidden cave inside she found a little dragon no bigger than her hand and its scales sparkled like diamonds in the soft moonlight\nHYP: lily lived in a cozy little village surrounded by a forest where she loved to explore and play one day while wandering through the woods she stumbled upon a hidden cave inside she found a little dragon no bigger than her hand and its  scale sparkled like diamonds in the soft moonlight\n                                                                                                                                                                                                                                                    S                                             \n\n=== SUMMARY ===\nnumber of sentences: 1\nsubstitutions=1 deletions=0 insertions=0 hits=51\n\nmer=1.92%\nwil=3.81%\nwip=96.19%\nwer=1.92%\n"
+    },
+    {
+      "page": 2,
+      "reference": "The little dragon's name was Twinkle, and it loved to play with Lily, chasing each other through the forest and sharing secrets. As the sun began to set, Lily noticed that Twinkle had a big collection of sparkly stones, but it wouldn't share them with her. Lily gently asked Twinkle to share, and to her surprise, Twinkle's heart grew three sizes bigger, and it happily shared its treasure with Lily.",
+      "hypothesis": "The little dragon's name was Twinkle, and it loved to play with Lily, chasing each other through the forest and sharing secrets. As the sun began to set, Lily noticed that Twinkle had a big collection of sparkly stones, but it wouldn't share them with her. Lily gently asked Twinkle to share, and to her surprise, Twinkle's heart grew three sizes bigger, and it happily shared its treasure with Lily.",
+      "wer": 0.0,
+      "accuracy": 100.0,
+      "insertions": 0,
+      "deletions": 0,
+      "substitutions": 0,
+      "alignment": "=== SUMMARY ===\nnumber of sentences: 1\nsubstitutions=0 deletions=0 insertions=0 hits=70\n\nmer=0.00%\nwil=0.00%\nwip=100.00%\nwer=0.00%\n"
+    }
+  ],
+  "accuracy_per_page": [
+    98.08,
+    100.0
+  ],
+  "summary_quality": {
+    "checks": {
+      "child_name_in_story": true,
+      "theme_reflected": true,
+      "correct_page_count": true,
+      "sentence_length_ok": true,
+      "bedtime_ending": true
+    },
+    "score": 10,
+    "max_score": 10
+  },
+  "aggregate": {
+    "avg_wer": 0.0096,
+    "avg_accuracy_pct": 99.04,
+    "avg_tts_latency_s": 66.41,
+    "llm_latency_s": 1.3,
+    "story_quality_score": 10,
+    "story_quality_max": 10
+  }
+}

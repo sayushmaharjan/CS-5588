@@ -1,0 +1,50 @@
+# Core ML
+torch>=2.0.0
+torchvision
+torchaudio
+transformers>=4.35.0
+diffusers>=0.24.0
+accelerate
+
+# Image processing
+controlnet-aux
+Pillow>=10.0.0
+scipy
+scikit-image
+opencv-python
+
+# Audio processing
+soundfile
+librosa
+
+# Vocals — Chatterbox TTS (Resemble AI) replaces Bark
+chatterbox-tts           # pip install chatterbox-tts
+
+# Alternative TTS fallback
+gTTS
+
+# Lip Sync (Wav2Lip dependencies)
+face-alignment
+batch-face
+
+# Background removal
+rembg
+
+# Video
+moviepy
+ffmpeg-python
+imageio[ffmpeg]          # required for diffusers export_to_video (SVD)
+
+# UI
+gradio>=4.0.0
+
+# LLM APIs
+openai
+requests
+
+# Utilities
+numpy
+beautifulsoup4
+
+# Optional: for faster SD/SVD inference on CUDA
+xformers

@@ -1,0 +1,9 @@
+1
+00:00:00,000 --> 00:00:11,060
+In a land far, far away, where the stars shone bright in the night sky, Liam the brave knight prepared for his magical moonlit adventure.
+He grabbed his trusty sword and set off into the forest, where the trees whispered secrets to each other in the gentle breeze.
+
+2
+00:00:11,560 --> 00:00:30,100
+As he walked deeper into the forest, a friendly dragon appeared, its scales shining like diamonds in the moonlight.
+The dragon spoke in a soft voice, 'Hello, Liam, I've been waiting for you. Climb onto my back, and we'll soar through the sky together.' Liam giggled with delight and hugged the dragon's neck, feeling the softness of its scales. Together, they drifted off to sleep under the starry sky.
