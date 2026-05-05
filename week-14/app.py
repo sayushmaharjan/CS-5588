@@ -4,7 +4,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 import config as cfg
 
-st.set_page_config(page_title="Cinematic Memory", page_icon="🎬",
+st.set_page_config(page_title="Narrate.AI", page_icon="🎬",
     layout="wide", initial_sidebar_state="collapsed")
 
 st.markdown("""<style>
@@ -62,8 +62,8 @@ for k,v in DEFS.items():
 # Hero
 st.markdown('<div style="text-align:center;padding:24px 0 6px">'
     '<h1 style="font-size:2.6rem;font-weight:700;margin:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);'
-    '-webkit-background-clip:text;-webkit-text-fill-color:transparent">🎬 Cinematic Memory</h1>'
-    '<p style="color:#6b7280;font-size:1rem;margin:6px 0 0">Transform your memories into a cinematic documentary</p></div>',
+    '-webkit-background-clip:text;-webkit-text-fill-color:transparent">Narrate.AI</h1>'
+    '<p style="color:#6b7280;font-size:1rem;margin:6px 0 0">Turn your photos and videos into a cinematic documentary</p></div>',
     unsafe_allow_html=True)
 
 # ══════════════════════ UPLOAD ═══════════════════════════════════════════════
